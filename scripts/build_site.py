@@ -52,7 +52,15 @@ def national(nb, dst):
     rows = [[(num(v) if isinstance(v, float) else v) for v in r] for r in c[keep].itertuples(index=False)]
     s = pd.read_csv(nb / "national_states.csv", dtype={"statefp": str})
     states = [{k: (num(v) if isinstance(v, float) else v) for k, v in r.items()} for r in s.to_dict("records")]
-    return {"run": R["run"], "nat": R["national"], "rel": R["relations"], "spatial": R["spatial"], "conc": R["concordance"],
+    # Screening-rule comparison, recomputed and checked against the audited totals on every build.
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from screening_rules import compute as screening
+    SR = screening(nb)
+    if SR["gate"] != "PASS":
+        sys.exit("Screening-rule checks failed: " + "; ".join(a["check"] for a in SR["audit"] if a["result"] != "PASS"))
+    pd.DataFrame(SR["rules"]).to_csv(out / "national_screening.csv", index=False)
+    pd.DataFrame(SR["audit"]).to_csv(out / "national_screening_audit.csv", index=False)
+    return {"screen": SR, "run": R["run"], "nat": R["national"], "rel": R["relations"], "spatial": R["spatial"], "conc": R["concordance"],
             "audit": R["audit"], "sources": R["sources"], "hazards": R["hazards"], "thr": R["thresholds"],
             "ccols": keep, "counties": rows, "states": states}
 

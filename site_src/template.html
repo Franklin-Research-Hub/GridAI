@@ -600,6 +600,7 @@ function renderUS(){
     <p class="note">Within-state variance suppression compares a state's tracts with its own counties. Click a column to sort, a row to open the state.</p>
     <div class="tbl"><table id="u-tab"></table></div>
     <p class="small"><a href="${NDIR}national_states.csv" download>States (CSV)</a> · <a href="${NDIR}national_counties.csv" download>Counties (CSV)</a> · <a href="${NDIR}national_tracts.csv" download>Tracts (CSV)</a></p></div>
+  ${screenPanel()}
   <div class="grid2">
     <div class="panel"><h2>Does outage burden follow burden nationally?</h2>${natRelations()}</div>
     <div class="panel"><h2>Checked against the paper</h2>${natConcordance()}</div>
@@ -612,6 +613,22 @@ function renderUS(){
   el.querySelector('#u-hid').onchange=e=>{US.showHidden=e.target.checked;drawState()};
   const ss=el.querySelector('#u-st'); ss.value=US.state; ss.onchange=()=>{US.state=ss.value;US.county=null;drawState()};
   drawUSMap(); drawState(); drawStateTable();
+}
+function screenPanel(){
+  const S=N.screen; if(!S) return '';
+  const R=S.rules, by=k=>R.find(r=>r.key===k), cur=by('county_avg'), same=by('same_count'), any=by('any_tract'), tr=by('tract');
+  const row=r=>`<tr><td style="min-width:260px">${esc(r.rule)}</td><td class="n">${int(r.counties_flagged)}${r.tracts_flagged?`<div class="small muted">${int(r.tracts_flagged)} tracts</div>`:''}</td><td class="n">${int(r.high_burden_reached)}</td><td class="n"><b>${pct(r.share_reached_pct,1)}</b></td><td class="n">${int(r.high_burden_missed)}</td><td class="n">${r.share_of_flagged_pop_high_burden_pct==null?'—':pct(r.share_of_flagged_pop_high_burden_pct,1)}</td></tr>`;
+  const head=`<tr><th>Rule</th><th class="n">Counties flagged</th><th class="n">Residents reached</th><th class="n">Share reached</th><th class="n">Missed</th><th class="n">Flagged who are high-burden</th></tr>`;
+  const ej=R.filter(r=>r.index==='EJBI'), sv=R.filter(r=>r.index!=='EJBI');
+  const pass=S.audit.filter(a=>a.result==='PASS').length;
+  return `<div class="panel" id="u-screen"><div class="eb">Screening rules</div><h2>Which rule reaches <span class="g">the hidden residents?</span></h2>
+  <p style="max-width:820px;color:#3d424d">The current county rule reaches <b>${pct(cur.share_reached_pct,1)}</b> of the ${(S.totals.high_burden_residents/1e6).toFixed(1)} million people in high-burden tracts. Flagging the same ${int(same.counties_flagged)} counties, chosen by how many high-burden residents they hold rather than by their average, reaches <b>${pct(same.share_reached_pct,1)}</b>. A county rule that counts any high-burden tract reaches everyone, but flags ${int(any.counties_flagged)} counties and ${(any.population_flagged/1e6).toFixed(0)} million people; a tract screen reaches the same residents while flagging only them.</p>
+  <h3>Environmental Justice Burden Index (high-burden tract: EJBI \u2265 ${S.thresholds.tract})</h3>
+  <div class="tbl"><table>${head}${ej.map(row).join('')}</table></div>
+  <h3 style="margin-top:22px">CDC Social Vulnerability Index (top-quartile tract: SVI \u2265 ${S.thresholds.tract})</h3>
+  <div class="tbl"><table>${head}${sv.map(row).join('')}</table></div>
+  <p class="note small">Every figure is a count from the audited national tables; nothing is estimated. The trade-off is reach against focus: a broader rule finds more high-burden residents but also flags more people who are not in high-burden tracts (last column). ${pass} of ${S.audit.length} checks passed on this build, including an exact match of the current rule to the published hidden population (${int(cur.high_burden_missed)}).</p>
+  <p class="small"><a href="${NDIR}national_screening.csv" download>Screening rules (CSV)</a> \u00b7 <a href="${NDIR}national_screening_audit.csv" download>Screening checks (CSV)</a></p></div>`;
 }
 function natRelations(){
   const r=N.rel, sp=N.spatial, ci=x=>x&&x.ci?` (95% CI ${fmt(x.ci[0],3)} to ${fmt(x.ci[1],3)})`:'';
