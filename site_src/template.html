@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SEGDA SMART Grid · What county averages hide</title>
+<meta name="description" content="SEGDA SMART Grid: energy justice, outage burden, climate stress and social vulnerability across California census tracts and counties. Reproduces Franklin, Socio-Environmental Grid Disruption Analysis.">
+<meta name="author" content="Victoria Love Franklin">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<style>
+:root{--ink:#0f1f33;--muted:#4a5a70;--line:#dde3ea;--bg:#ffffff;--soft:#f5f7fa;--accent:#0e7c86;--accent-ink:#fff;--signal:#6c2bd9;
+--b0:#f6f1e7;--b1:#f1d9a8;--b2:#e3a86b;--b3:#c8613f;--b4:#7a1f3d;--nodata:#e7ebf0;--hidden:#00c2c7;--r:10px;
+--hh:#b2182b;--ll:#2166ac;--lh:#92c5de;--hl:#f4a582;--ns:#eef1f5}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+a{color:var(--accent)}h1,h2,h3{line-height:1.2;margin:0}
+.top{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--line)}
+.top-in{max-width:1280px;margin:0 auto;padding:10px 24px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{display:flex;flex-direction:column;text-decoration:none;color:var(--ink)}
+.brand b{font-size:1.25rem;letter-spacing:-.01em}.brand b span{color:var(--accent)}
+.brand small{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+nav{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+nav a{padding:7px 11px;border-radius:8px;text-decoration:none;color:var(--ink);font-size:.9rem;font-weight:600}
+nav a[aria-current="true"]{background:var(--accent);color:#fff}
+main{max-width:1280px;margin:0 auto;padding:20px 24px 60px}
+.view[hidden]{display:none}
+.hero{display:grid;grid-template-columns:1.25fr 1fr;gap:28px;align-items:center;padding:18px 0 8px}
+.eb{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:800}
+.hero h1{font-size:2.2rem;margin:6px 0 10px}.hero h1 em{font-style:normal;color:var(--signal)}
+.lead{font-size:1.06rem;color:var(--muted);margin:0}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.stat{background:var(--soft);border-radius:var(--r);padding:14px 16px}
+.stat b{display:block;font-size:1.75rem;letter-spacing:-.02em}.stat span{font-size:.86rem;color:var(--muted)}
+.panel{border:1px solid var(--line);border-radius:var(--r);padding:18px;background:#fff;margin:16px 0}
+.panel h2{font-size:1.2rem;margin-bottom:6px}.panel h3{font-size:1rem;margin:10px 0 4px}
+.grid2>*,.grid3>*,.maprow>*{min-width:0}.chart svg{max-width:100%;height:auto;display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.maprow{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:18px;align-items:start}
+.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0 10px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{all:unset;cursor:pointer;padding:6px 12px;font-size:.88rem;border-right:1px solid var(--line)}
+.seg button:last-child{border-right:0}.seg button[aria-pressed="true"]{background:var(--accent);color:#fff;font-weight:700}
+.seg button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+label.chk{display:inline-flex;gap:6px;align-items:center;font-size:.9rem;font-weight:600}
+select{font:inherit;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff}
+.map{width:100%;aspect-ratio:1/1.08;max-height:78vh}.map svg{width:100%;height:100%;display:block}
+.map.sm{aspect-ratio:1/1.1}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:.8rem;color:var(--muted);margin-top:6px}
+.legend i{display:inline-block;width:14px;height:12px;border-radius:2px;margin-right:4px;vertical-align:-1px;border:1px solid rgba(0,0,0,.08)}
+.note{font-size:.88rem;color:var(--muted)}.small{font-size:.84rem}
+.big{font-size:1.6rem;font-weight:800;letter-spacing:-.02em}
+.kv{display:grid;grid-template-columns:1fr 1fr;gap:8px 14px;margin:8px 0}
+.kv div{background:var(--soft);border-radius:8px;padding:8px 10px}.kv span{display:block;font-size:.76rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}.kv b{font-size:1.15rem}
+table{border-collapse:collapse;width:100%;font-size:.88rem}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+.tbl{overflow:auto;max-height:520px}
+.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.74rem;font-weight:800}
+.ok{background:#e3f4ea;color:#1d6b3c}.warn{background:#fff1dc;color:#8a5200}.bad{background:#fde4e4;color:#9b1c1c}
+.tip{position:fixed;pointer-events:none;background:#0f1f33;color:#fff;padding:8px 10px;border-radius:8px;font-size:.82rem;max-width:280px;z-index:50;display:none}
+.chart svg{width:100%;height:auto;display:block}
+.axis text{font-size:11px;fill:var(--muted)}.axis path,.axis line{stroke:#c9d1db}
+footer{border-top:1px solid var(--line);padding:18px 24px;color:var(--muted);font-size:.84rem;max-width:1280px;margin:0 auto}
+.callout{border-left:4px solid var(--signal);background:#f6f1ff;padding:12px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+@media(max-width:900px){.hero,.maprow,.grid2,.grid3{grid-template-columns:1fr}.hero h1{font-size:1.7rem}nav{margin-left:0}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <a class="brand" href="#hidden" data-go="hidden"><b>SEGDA <span>SMART Grid</span></b><small>Socio-Environmental Grid Disruption Analysis · California</small></a>
+  <nav id="nav">
+    <a href="#hidden" data-go="hidden">What counties hide</a>
+    <a href="#outage" data-go="outage">Outages &amp; climate</a>
+    <a href="#relations" data-go="relations">How they relate</a>
+    <a href="#clusters" data-go="clusters">Clusters</a>
+    <a href="#robust" data-go="robust">Robustness</a>
+    <a href="#methods" data-go="methods">Methods &amp; validation</a>
+    <a href="#audit" data-go="audit">Data &amp; audit</a>
+  </nav>
+</div></header>
+<main>
+<section class="view" id="v-hidden"></section>
+<section class="view" id="v-outage" hidden></section>
+<section class="view" id="v-relations" hidden></section>
+<section class="view" id="v-clusters" hidden></section>
+<section class="view" id="v-robust" hidden></section>
+<section class="view" id="v-methods" hidden></section>
+<section class="view" id="v-audit" hidden></section>
+</main>
+<footer id="foot"></footer>
+<div class="tip" id="tip"></div>
+<script>
+const D = __DATA__;
+const TT = __TRACTS__;
+const CT = __COUNTIES__;
+const S = D.stats, THR = D.thr;
+const fmt = (x,d=2)=> x==null||isNaN(x)?'—':Number(x).toFixed(d);
+const pct = (x,d=1)=> x==null?'—':Number(x).toFixed(d)+'%';
+const int = x=> x==null?'—':Math.round(x).toLocaleString();
+const esc = s=> String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const css = n=> getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const tip = document.getElementById('tip');
+const showTip=(e,h)=>{tip.innerHTML=h;tip.style.display='block';moveTip(e)};
+const moveTip=e=>{const x=e.clientX+14,y=e.clientY+14;tip.style.left=Math.min(x,innerWidth-300)+'px';tip.style.top=y+'px'};
+const hideTip=()=>tip.style.display='none';
+
+/* geometry: pre-projected to California Albers (EPSG:3310) */
+const tractsFC = topojson.feature(TT, TT.objects[Object.keys(TT.objects)[0]]);
+const countiesFC = topojson.feature(CT, CT.objects[Object.keys(CT.objects)[0]]);
+const countyMesh = topojson.mesh(CT, CT.objects[Object.keys(CT.objects)[0]], (a,b)=>a!==b);
+const C = Object.fromEntries(D.counties.map(c=>[c.fips,c]));
+const T = D.tracts;   // GEOID -> [ejbi, svi, ces, pb, pop, fips, masked]
+const countyName = f=> (C[f]||{}).NAME || ('County '+f);
+
+/* five classes built around the study thresholds, so the colour itself says high or not */
+const BREAKS=[0.25,0.5,0.6,0.75], RAMP=['--b0','--b1','--b2','--b3','--b4'];
+const burdenColor = v=> v==null?css('--nodata'):css(RAMP[d3.bisectRight(BREAKS,v)]);
+const burdenLegend = (lab)=> `<div class="legend">${['< 0.25','0.25–0.50','0.50–0.60','0.60–0.75','≥ 0.75'].map((l,i)=>`<span><i style="background:${css(RAMP[i])}"></i>${l}</span>`).join('')}<span><i style="background:${css('--nodata')}"></i>${lab||'Not computed'}</span></div>`;
+
+function baseMap(el, {fc, color, tipHtml, onClick, highlight, mesh=true, label}){
+  el.innerHTML='';
+  const W=600,H=650;
+  const proj=d3.geoIdentity().reflectY(true).fitExtent([[6,6],[W-6,H-6]],countiesFC);
+  const path=d3.geoPath(proj);
+  const svg=d3.select(el).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('role','img').attr('aria-label',label||'Map of California');
+  const g=svg.append('g');
+  g.selectAll('path.f').data(fc.features).join('path').attr('class','f').attr('d',path)
+    .attr('fill',d=>color(d)).attr('stroke',fc===tractsFC?'none':'#fff').attr('stroke-width',fc===tractsFC?0:.7)
+    .on('mousemove',(e,d)=>showTip(e,tipHtml(d))).on('mouseleave',hideTip)
+    .on('click',(e,d)=>onClick&&onClick(d));
+  if(highlight){g.selectAll('path.h').data(fc.features.filter(highlight)).join('path').attr('class','h').attr('d',path)
+    .attr('fill','none').attr('stroke',css('--hidden')).attr('stroke-width',1.6).attr('pointer-events','none')}
+  if(mesh) g.append('path').attr('d',path(countyMesh)).attr('fill','none').attr('stroke',fc===tractsFC?'rgba(15,31,51,.55)':'#fff').attr('stroke-width',fc===tractsFC?.6:.7).attr('pointer-events','none');
+  // zoom so tracts in Los Angeles or the Bay Area can be inspected
+  svg.call(d3.zoom().scaleExtent([1,14]).on('zoom',e=>{g.attr('transform',e.transform);g.selectAll('path').attr('stroke-width',function(){return (this.classList.contains('h')?1.6:fc===tractsFC?.6:.7)/e.transform.k})}));
+  return {svg,g,path};
+}
+
+/* ---------------- 1. What county averages hide ---------------- */
+const H = {scale:'tract', measure:'ejbi', showHidden:true, county:6059};
+function measureOf(f){ // value for a tract or county under the current measure
+  return H.measure==='ejbi'? f : f;
+}
+function renderHidden(){
+  const el=document.getElementById('v-hidden');
+  el.innerHTML=`
+  <section class="hero">
+    <div><div class="eb">California census tracts and counties · 2018–2023</div>
+      <h1>County averages hide <em>neighborhoods.</em></h1>
+      <p class="lead">The same burden index, measured for 7,931 census tracts and then averaged up to 58 counties, loses most of what made neighborhoods different. Switch between the two scales below and watch high-burden communities disappear into moderate county colours.</p></div>
+    <div class="stats">
+      <div class="stat"><b>${pct(S.suppressed_pct,2)}</b><span>of tract-level variation erased by county averaging</span></div>
+      <div class="stat"><b>${int(S.masked_tracts)}</b><span>high-burden tracts inside counties that are not classed high</span></div>
+      <div class="stat"><b>${(S.masked_pop/1e6).toFixed(2)} million</b><span>Californians live in those hidden tracts, across ${S.masked_counties} counties</span></div>
+      <div class="stat"><b>${int(S.svi_hidden_tracts)}</b><span>top-quartile social-vulnerability tracts in counties CDC's county rank does not flag</span></div>
+    </div>
+  </section>
+  <div class="panel">
+    <div class="controls">
+      <div class="seg" id="h-scale" role="group" aria-label="Scale"><button data-v="tract">Census tracts</button><button data-v="county">Counties</button></div>
+      <div class="seg" id="h-measure" role="group" aria-label="Measure"><button data-v="ejbi">Environmental-justice burden (EJBI)</button><button data-v="svi">Social vulnerability (CDC SVI)</button></div>
+      <label class="chk"><input type="checkbox" id="h-hid" checked> Outline hidden tracts</label>
+      <label class="chk">County <select id="h-county">${D.counties.slice().sort((a,b)=>a.NAME.localeCompare(b.NAME)).map(c=>`<option value="${c.fips}">${esc(c.NAME)}</option>`).join('')}</select></label>
+    </div>
+    <div class="maprow">
+      <div><div class="map" id="h-map"></div><div id="h-leg"></div><p class="note" id="h-cap"></p></div>
+      <div id="h-detail"></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="panel"><h2>Same index, two scales</h2>
+      <p class="note">Variance of the identical EJBI at tract and county scale. County aggregation keeps ${pct(S.retained_pct,2)} of the tract-level variation.</p>
+      <div class="chart" id="h-var"></div></div>
+    <div class="panel"><h2>Where the most burden is hidden</h2>
+      <p class="note">High-burden tracts (EJBI ≥ ${THR.tract}) by county. Counties below the county threshold (${THR.county}) hide all of theirs.</p>
+      <div class="tbl" style="max-height:330px"><table id="h-tab"></table></div></div>
+  </div>`;
+  const seg=(id,key)=>{const b=el.querySelector(id);b.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.v===H[key])));
+    b.onclick=e=>{const t=e.target.closest('button');if(!t)return;H[key]=t.dataset.v;b.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===t)));drawH()}};
+  seg('#h-scale','scale');seg('#h-measure','measure');
+  el.querySelector('#h-hid').onchange=e=>{H.showHidden=e.target.checked;drawH()};
+  const sel=el.querySelector('#h-county');sel.value=H.county;sel.onchange=()=>{H.county=+sel.value;drawDetail()};
+  drawH();drawVar();drawHiddenTable();
+}
+function tractVal(g){const r=T[g];if(!r)return null;return H.measure==='ejbi'?r[0]:r[1]}
+function countyVal(f){const c=C[f];if(!c)return null;return H.measure==='ejbi'?c.ejbi:c.svi22}
+function isHidden(g){const r=T[g];if(!r)return false;
+  if(H.measure==='ejbi') return r[6]===1;
+  const c=C[r[5]];return r[1]!=null&&r[1]>=THR.svi&&c&&c.svi22!=null&&c.svi22<THR.svi}
+function drawH(){
+  const box=document.getElementById('h-map'), mlab=H.measure==='ejbi'?'EJBI':'SVI';
+  if(H.scale==='tract'){
+    baseMap(box,{fc:tractsFC,color:d=>burdenColor(tractVal(d.properties.GEOID)),label:`Tract ${mlab} map`,
+      highlight:H.showHidden?d=>isHidden(d.properties.GEOID):null,
+      onClick:d=>{const r=T[d.properties.GEOID];if(r){H.county=r[5];document.getElementById('h-county').value=H.county;drawDetail()}},
+      tipHtml:d=>{const g=d.properties.GEOID,r=T[g];if(!r)return `<b>Tract ${g}</b><div>Not in the study data</div>`;
+        return `<b>Tract ${g}</b><div>${esc(countyName(r[5]))} County</div><div>EJBI ${fmt(r[0])} · SVI ${fmt(r[1])}</div><div>CES ${fmt(r[2])} · Pollution ${fmt(r[3])}</div><div>${int(r[4])} residents</div>${isHidden(g)?'<div style="color:#7ff">Hidden by its county average</div>':''}`}});
+  } else {
+    baseMap(box,{fc:countiesFC,color:d=>burdenColor(countyVal(+d.properties.fips)),label:`County ${mlab} map`,
+      onClick:d=>{H.county=+d.properties.fips;document.getElementById('h-county').value=H.county;drawDetail()},
+      tipHtml:d=>{const c=C[+d.properties.fips];return `<b>${esc(c.NAME)} County</b><div>County EJBI ${fmt(c.ejbi)}${c.ejbi>=THR.county?' (high)':''}</div><div>CDC county SVI 2022 ${fmt(c.svi22)}</div><div>${c.tracts_high} high-burden tracts inside</div>`}});
+  }
+  document.getElementById('h-leg').innerHTML=burdenLegend()+(H.showHidden&&H.scale==='tract'?`<div class="legend"><span><i style="background:#fff;border:2px solid ${css('--hidden')}"></i>${H.measure==='ejbi'?`High-burden tract (≥ ${THR.tract}) in a county below ${THR.county}`:`Top-quartile SVI tract (≥ ${THR.svi}) in a county CDC ranks below ${THR.svi}`}</span></div>`:'');
+  document.getElementById('h-cap').innerHTML = H.scale==='tract'
+    ? (H.measure==='ejbi'?`Each of the ${int(S.tracts_valid)} tracts with all three components. Scroll or pinch to zoom; click a tract to see its county.`
+      :`CDC/ATSDR SVI at tract level (file supplied: SVI 2018 schema on 2010 tracts). Outlined tracts are in the top vulnerability quartile while CDC's own 2022 county rank for their county is below it.`)
+    : (H.measure==='ejbi'?`Population-weighted county EJBI, the same index averaged over each county's tracts. ${S.counties_high} counties meet the county threshold.`
+      :`CDC/ATSDR SVI 2022 county percentile rank, as CDC publishes it. ${S.svi_counties_high} counties are in the top quartile.`);
+  drawDetail();
+}
+function drawDetail(){
+  const c=C[H.county], el=document.getElementById('h-detail'); if(!c){el.innerHTML='';return}
+  const vals=Object.entries(T).filter(([g,r])=>r[5]===H.county&&(H.measure==='ejbi'?r[0]:r[1])!=null).map(([g,r])=>({v:H.measure==='ejbi'?r[0]:r[1],p:r[4]||0}));
+  const cv=H.measure==='ejbi'?c.ejbi:c.svi22, thr=H.measure==='ejbi'?THR.tract:THR.svi, cthr=H.measure==='ejbi'?THR.county:THR.svi;
+  const hi=vals.filter(x=>x.v>=thr), hp=d3.sum(hi,x=>x.p), tp=d3.sum(vals,x=>x.p);
+  const hiddenNow = cv!=null && cv<cthr && hi.length>0;
+  el.innerHTML=`<h2>${esc(c.NAME)} County</h2>
+    <p class="note">${H.measure==='ejbi'?'Environmental-justice burden index':'Social vulnerability (CDC SVI)'}: the county figure against the tracts it summarises.</p>
+    <div class="kv"><div><span>County figure</span><b>${fmt(cv)}</b></div><div><span>Tracts</span><b>${vals.length}</b></div>
+      <div><span>Tracts ≥ ${thr}</span><b>${hi.length}</b></div><div><span>People in them</span><b>${int(hp)}</b></div>
+      <div><span>Lowest tract</span><b>${fmt(d3.min(vals,x=>x.v))}</b></div><div><span>Highest tract</span><b>${fmt(d3.max(vals,x=>x.v))}</b></div></div>
+    <div class="chart" id="h-hist"></div>
+    ${hiddenNow?`<div class="callout"><b>${hi.length} high tract${hi.length===1?'':'s'} hidden.</b> ${esc(c.NAME)}'s county figure (${fmt(cv)}) is below ${cthr}, so a county-level screen would not flag it, yet ${int(hp)} people (${pct(100*hp/(tp||1),0)} of residents) live in tracts at or above ${thr}.</div>`
+      :cv!=null&&cv>=cthr?`<p class="note">${esc(c.NAME)} is flagged at county level, but its tracts still range from ${fmt(d3.min(vals,x=>x.v))} to ${fmt(d3.max(vals,x=>x.v))}: a county flag treats them all alike.</p>`:''}
+    ${H.measure==='svi'?`<p class="note small">County figure: CDC SVI 2022 county rank. Tracts: SVI tract file supplied (2018 schema). Vintages differ; compare by pattern, not to the decimal.</p>`:''}`;
+  // histogram of tract values with the county figure and thresholds
+  const box=document.getElementById('h-hist'),W=420,Hh=180,m={t:24,r:10,b:28,l:34};
+  const x=d3.scaleLinear().domain([0,1]).range([m.l,W-m.r]);
+  const bins=d3.bin().domain([0,1]).thresholds(20).value(d=>d.v)(vals);
+  const y=d3.scaleLinear().domain([0,d3.max(bins,b=>b.length)||1]).nice().range([Hh-m.b,m.t]);
+  const svg=d3.select(box).append('svg').attr('viewBox',`0 0 ${W} ${Hh}`).attr('role','img').attr('aria-label','Distribution of tract values');
+  svg.selectAll('rect').data(bins).join('rect').attr('x',b=>x(b.x0)+1).attr('width',b=>Math.max(0,x(b.x1)-x(b.x0)-2)).attr('y',b=>y(b.length)).attr('height',b=>y(0)-y(b.length)).attr('fill',b=>burdenColor((b.x0+b.x1)/2));
+  svg.append('g').attr('class','axis').attr('transform',`translate(0,${Hh-m.b})`).call(d3.axisBottom(x).ticks(5));
+  svg.append('g').attr('class','axis').attr('transform',`translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4));
+  // lines carry no text; a key row above the plot names them, so labels never collide
+  const keys=[];
+  const vline=(v,col,lab,dash)=>{if(v==null)return;svg.append('line').attr('x1',x(v)).attr('x2',x(v)).attr('y1',m.t).attr('y2',Hh-m.b).attr('stroke',col).attr('stroke-width',2).attr('stroke-dasharray',dash||null);keys.push([col,lab,dash])};
+  vline(cv,css('--ink'),'County '+fmt(cv));vline(thr,css('--signal'),'High tract \u2265 '+thr,'4 3');
+  if(cthr!==thr) vline(cthr,css('--accent'),'High county \u2265 '+cthr,'2 3');
+  let kx=m.l;keys.forEach(([col,lab,dash])=>{const g=svg.append('g').attr('transform',`translate(${kx},8)`);
+    g.append('line').attr('x1',0).attr('x2',16).attr('y1',0).attr('y2',0).attr('stroke',col).attr('stroke-width',2).attr('stroke-dasharray',dash||null);
+    const t=g.append('text').attr('x',20).attr('y',4).attr('font-size',11).attr('fill',col).attr('font-weight',700).text(lab);
+    kx+=20+t.node().getComputedTextLength()+14;});
+}
+function drawVar(){
+  const box=document.getElementById('h-var'),W=520,Hh=200,m={t:16,r:16,b:30,l:120};
+  const data=[{k:'Census tracts (7,931)',v:S.var_tract},{k:'Counties (58)',v:S.var_county}];
+  const x=d3.scaleLinear().domain([0,S.var_tract*1.1]).range([m.l,W-m.r]),y=d3.scaleBand().domain(data.map(d=>d.k)).range([m.t,Hh-m.b]).padding(.35);
+  const svg=d3.select(box).append('svg').attr('viewBox',`0 0 ${W} ${Hh}`);
+  svg.selectAll('rect').data(data).join('rect').attr('x',m.l).attr('y',d=>y(d.k)).attr('height',y.bandwidth()).attr('width',d=>x(d.v)-m.l).attr('fill',(d,i)=>i?css('--b2'):css('--b4'));
+  svg.selectAll('text.v').data(data).join('text').attr('x',d=>x(d.v)+6).attr('y',d=>y(d.k)+y.bandwidth()/2+4).attr('font-size',12).attr('font-weight',700).text(d=>d.v.toFixed(5));
+  svg.append('g').attr('class','axis').attr('transform',`translate(${m.l},0)`).call(d3.axisLeft(y).tickSize(0));
+  svg.append('text').attr('x',W-m.r).attr('y',Hh-6).attr('text-anchor','end').attr('font-size',12).attr('fill',css('--signal')).attr('font-weight',800).text(`${pct(S.suppressed_pct,2)} suppressed`);
+}
+function drawHiddenTable(){
+  const rows=D.counties.slice().sort((a,b)=>b.tracts_high-a.tracts_high);
+  document.getElementById('h-tab').innerHTML=`<tr><th>County</th><th class="n">County EJBI</th><th class="n">High tracts</th><th class="n">People in them</th><th>County flag</th></tr>`+
+    rows.filter(r=>r.tracts_high>0).map(r=>`<tr><td><a href="#hidden" data-county="${r.fips}">${esc(r.NAME)}</a></td><td class="n">${fmt(r.ejbi)}</td><td class="n">${r.tracts_high}</td><td class="n">${int(r.pop_high)}</td><td>${r.ejbi>=THR.county?'<span class="pill ok">High</span>':'<span class="pill warn">Not flagged</span>'}</td></tr>`).join('');
+  document.getElementById('h-tab').onclick=e=>{const a=e.target.closest('a[data-county]');if(!a)return;e.preventDefault();H.county=+a.dataset.county;document.getElementById('h-county').value=H.county;drawDetail();document.getElementById('h-detail').scrollIntoView({behavior:'smooth',block:'nearest'})};
+}
+
+/* ---------------- 2. Outages and climate ---------------- */
+function renderOutage(){
+  const el=document.getElementById('v-outage');
+  el.innerHTML=`<div class="panel"><h2>Outage burden and climate stress</h2>
+    <p class="note">Primary Outage Burden Index: reconstructed EAGLE-I customer-outage-hours, 2018–2023, divided by ORNL Modeled County Customers, then clipped at 1.5 × IQR and scaled 0–1. Climate Stress: seven FEMA National Risk Index hazards, each min–max scaled, averaged equally. Hazard is potential stress; outages are realised disruption, so the two are kept apart.</p>
+    <div class="grid2"><div><h3>Primary OBI (${S.obi_n} counties)</h3><div class="map sm" id="o-obi"></div><div class="legend" id="o-leg1"></div>
+      <p class="note">${S.obi_unavailable.join(' and ')} lack a complete outage record and customer denominator, and are shown as unavailable rather than zero.</p></div>
+    <div><h3>Climate Stress (58 counties)</h3><div class="map sm" id="o-cs"></div><div class="legend" id="o-leg2"></div></div></div></div>
+    <div class="panel"><h2>Climate Stress components</h2><div class="tbl"><table id="o-tab"></table></div></div>`;
+  const seq=d3.scaleSequential([0,1],d3.interpolateRgbBasis([css('--b0'),css('--b2'),css('--b4')]));
+  const mk=(id,key,lab)=>baseMap(document.getElementById(id),{fc:countiesFC,label:lab,color:d=>{const v=C[+d.properties.fips][key];return v==null?css('--nodata'):seq(v)},
+    tipHtml:d=>{const c=C[+d.properties.fips];return `<b>${esc(c.NAME)}</b><div>Primary OBI ${fmt(c.obi)}</div><div>Climate Stress ${fmt(c.cs)}</div><div>County EJBI ${fmt(c.ejbi)}</div>`}});
+  mk('o-obi','obi','Primary OBI map');mk('o-cs','cs','Climate Stress map');
+  const lg=`<span>0</span><span style="flex:0 0 140px;height:10px;border-radius:3px;background:linear-gradient(90deg,${css('--b0')},${css('--b2')},${css('--b4')})"></span><span>1</span><span><i style="background:${css('--nodata')}"></i>Unavailable</span>`;
+  document.getElementById('o-leg1').innerHTML=lg;document.getElementById('o-leg2').innerHTML=lg;
+  const hz=Object.values(D.hazards);
+  document.getElementById('o-tab').innerHTML=`<tr><th>County</th>${hz.map(h=>`<th class="n">${h}</th>`).join('')}<th class="n">Climate Stress</th></tr>`+
+    D.counties.slice().sort((a,b)=>b.cs-a.cs).map(c=>`<tr><td>${esc(c.NAME)}</td>${hz.map(h=>`<td class="n">${fmt((D.climate[c.fips]||{})[h])}</td>`).join('')}<td class="n"><b>${fmt(c.cs)}</b></td></tr>`).join('');
+}
+
+/* ---------------- 3. Relationships ---------------- */
+function scatter(el,xk,yk,xl,yl,r){
+  const pts=D.counties.filter(c=>c[xk]!=null&&c[yk]!=null),W=420,Hh=320,m={t:14,r:14,b:40,l:44};
+  const x=d3.scaleLinear().domain([0,1]).range([m.l,W-m.r]),y=d3.scaleLinear().domain([0,1]).range([Hh-m.b,m.t]);
+  const svg=d3.select(el).append('svg').attr('viewBox',`0 0 ${W} ${Hh}`).attr('role','img').attr('aria-label',`${yl} against ${xl}`);
+  svg.append('g').attr('class','axis').attr('transform',`translate(0,${Hh-m.b})`).call(d3.axisBottom(x).ticks(5));
+  svg.append('g').attr('class','axis').attr('transform',`translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5));
+  svg.append('text').attr('x',(m.l+W-m.r)/2).attr('y',Hh-6).attr('text-anchor','middle').attr('font-size',12).text(xl);
+  svg.append('text').attr('transform',`translate(12,${(Hh-m.b+m.t)/2}) rotate(-90)`).attr('text-anchor','middle').attr('font-size',12).text(yl);
+  const lr=d3.mean(pts,p=>p[xk]),lyr=d3.mean(pts,p=>p[yk]),b=d3.sum(pts,p=>(p[xk]-lr)*(p[yk]-lyr))/d3.sum(pts,p=>(p[xk]-lr)**2),a=lyr-b*lr;
+  svg.append('line').attr('x1',x(0)).attr('x2',x(1)).attr('y1',y(Math.max(-.2,a))).attr('y2',y(a+b)).attr('stroke',css('--signal')).attr('stroke-width',1.5).attr('stroke-dasharray','5 4').attr('clip-path',null);
+  svg.selectAll('circle').data(pts).join('circle').attr('cx',p=>x(p[xk])).attr('cy',p=>y(p[yk])).attr('r',5).attr('fill',css('--accent')).attr('opacity',.8)
+    .on('mousemove',(e,p)=>showTip(e,`<b>${esc(p.NAME)}</b><div>${xl} ${fmt(p[xk])}</div><div>${yl} ${fmt(p[yk])}</div>`)).on('mouseleave',hideTip);
+}
+function renderRelations(){
+  const el=document.getElementById('v-relations'), byp=Object.fromEntries(D.corr.map(c=>[c.pair,c]));
+  const card=(k,xk,yk,xl,yl,txt)=>{const c=byp[k];return `<div class="panel"><h3>${yl} vs ${xl}</h3>
+    <div class="chart" id="s-${k}"></div><p class="small"><b>Pearson r = ${fmt(c.pearson_r,4)}</b> (p = ${c.pearson_p<0.001?c.pearson_p.toExponential(1):fmt(c.pearson_p,4)}, n = ${c.n}); bootstrap 95% CI ${fmt(c.boot95[0],3)} to ${fmt(c.boot95[1],3)}. Spearman ρ = ${fmt(c.spearman_rho,4)}.</p><p class="note">${txt}</p></div>`};
+  el.innerHTML=`<div class="panel"><h2>How the three dimensions relate</h2><p class="note">County-level correlations on complete pairs, with 5,000-resample bootstrap intervals (fixed seed). These are ecological associations between counties, not statements about any household.</p></div>
+  <div class="grid3">${card('ej_obi','ejbi','obi','County EJBI','Primary OBI','Higher-burden counties recorded lower measured outage burden. This does not mean better reliability for burdened communities: scale mismatch, utility geography and reporting coverage all shape it.')}
+  ${card('ej_cs','ejbi','cs','County EJBI','Climate Stress','Higher environmental-justice burden goes with higher multi-hazard stress.')}
+  ${card('obi_cs','obi','cs','Primary OBI','Climate Stress','High-hazard counties were not the ones with the most realised outages in 2018–2023; hazard and outage are separate dimensions.')}</div>
+  <div class="panel"><h3>Group comparison (Welch's unequal-variance test)</h3><p>Primary OBI averages <b>${fmt(S.welch.mean_high,3)}</b> in the ${S.welch.n_high} High-EJBI counties against <b>${fmt(S.welch.mean_other,3)}</b> in the other ${S.welch.n_other} (t = ${fmt(S.welch.t,2)}, p ${S.welch.p<0.001?'< 0.001':'= '+fmt(S.welch.p,3)}).</p></div>`;
+  scatter(document.getElementById('s-ej_obi'),'ejbi','obi','County EJBI','Primary OBI');
+  scatter(document.getElementById('s-ej_cs'),'ejbi','cs','County EJBI','Climate Stress');
+  scatter(document.getElementById('s-obi_cs'),'obi','cs','Primary OBI','Climate Stress');
+}
+
+/* ---------------- 4. Clusters ---------------- */
+function renderClusters(){
+  const el=document.getElementById('v-clusters');
+  const LC={HH:'--hh',LL:'--ll',LH:'--lh',HL:'--hl',NS:'--ns'},LN={HH:'High–High',LL:'Low–Low',LH:'Low–High',HL:'High–Low',NS:'Not significant'};
+  el.innerHTML=`<div class="panel"><h2>Spatial clustering</h2><p class="note">Global Moran's I and Local Indicators of Spatial Association on queen-contiguity weights, ${D.run.permutations.toLocaleString()} permutations, fixed seed. Clusters are significant at p &lt; 0.05 (pseudo p-value). Local cluster counts move between permutation runs; the paper's run is listed on Methods &amp; validation.</p>
+  <div class="grid2"><div><h3>County EJBI · Moran's I = ${fmt(S.moran_ej,4)} (p = ${fmt(S.moran_ej_p,4)})</h3><div class="map sm" id="c-ej"></div></div>
+  <div><h3>Primary OBI · Moran's I = ${fmt(S.moran_obi,4)} (p = ${fmt(S.moran_obi_p,4)})</h3><div class="map sm" id="c-obi"></div></div></div>
+  <div class="legend">${Object.keys(LC).map(k=>`<span><i style="background:${css(LC[k])}"></i>${LN[k]}</span>`).join('')}<span><i style="background:#fff;border:1px dashed #999"></i>Unavailable (no OBI)</span></div></div>`;
+  const mk=(id,key)=>baseMap(document.getElementById(id),{fc:countiesFC,color:d=>{const v=C[+d.properties.fips][key];return v?css(LC[v]):'#fff'},
+    tipHtml:d=>{const c=C[+d.properties.fips];return `<b>${esc(c.NAME)}</b><div>${c[key]?LN[c[key]]:'Unavailable'}</div>`}});
+  mk('c-ej','lisa_ej');mk('c-obi','lisa_obi');
+}
+
+/* ---------------- 5. Robustness ---------------- */
+function renderRobust(){
+  const el=document.getElementById('v-robust');
+  el.innerHTML=`<div class="panel"><h2>Does the result survive other outage measures?</h2><p class="note">Correlation of county EJBI with each alternative outage specification, with bootstrap 95% intervals. Ceiling: ${S.sens_meta.ceiling_episodes} episodes at the ${S.sens_meta.ceiling_hours}-hour cap. Floor: ${S.sens_meta.floor_episodes} episodes at the ${S.sens_meta.floor_customers}-customer lower bound. ${S.sens_direction_holds?'<b>The direction never reverses.</b>':'<b>The direction reverses in at least one specification.</b>'}</p><div class="chart" id="r-forest"></div></div>
+  <div class="grid2"><div class="panel"><h2>External check: CDC SVI</h2><p>County EJBI and CDC/ATSDR county SVI 2022: Pearson r = <b>${fmt(S.r_svi_ej,3)}</b>; ${pct(S.svi_agree_pct,1)} of counties are classed the same (EJBI ≥ ${THR.county}, SVI ≥ ${THR.svi}). SVI is one of EJBI's three components, so this shows consistency, not independence.</p><div class="chart" id="r-svi"></div></div>
+  <div class="panel"><h2>Historical reliability (EIA-861), sensitivity only</h2><p>Blending 70% Primary OBI with 30% of the EIA-861 2018–2023 county reliability index (${S.blend_n} counties with ≥ 4 qualifying years): r with EJBI = <b>${fmt(S.r_ej_blend,3)}</b>, with Climate Stress = <b>${fmt(S.r_cs_blend,3)}</b>. EIA-861 is reported by utility, not county, so it never enters Primary OBI.</p></div></div>`;
+  const rows=D.sens,box=document.getElementById('r-forest'),W=760,Hh=46+rows.length*34,m={t:20,r:30,b:30,l:250};
+  const x=d3.scaleLinear().domain([-0.8,0.2]).range([m.l,W-m.r]),y=d3.scaleBand().domain(rows.map(r=>r.spec)).range([m.t,Hh-m.b]).padding(.4);
+  const svg=d3.select(box).append('svg').attr('viewBox',`0 0 ${W} ${Hh}`);
+  svg.append('line').attr('x1',x(0)).attr('x2',x(0)).attr('y1',m.t).attr('y2',Hh-m.b).attr('stroke','#999').attr('stroke-dasharray','3 3');
+  svg.selectAll('line.ci').data(rows).join('line').attr('x1',r=>x(r.ci_ejbi[0])).attr('x2',r=>x(r.ci_ejbi[1])).attr('y1',r=>y(r.spec)+y.bandwidth()/2).attr('y2',r=>y(r.spec)+y.bandwidth()/2).attr('stroke',css('--ink')).attr('stroke-width',2);
+  svg.selectAll('circle').data(rows).join('circle').attr('cx',r=>x(r.r_ejbi)).attr('cy',r=>y(r.spec)+y.bandwidth()/2).attr('r',6).attr('fill',(r,i)=>i?css('--accent'):css('--signal'));
+  svg.selectAll('text.lab').data(rows).join('text').attr('x',m.l-8).attr('y',r=>y(r.spec)+y.bandwidth()/2+4).attr('text-anchor','end').attr('font-size',12).text(r=>`${r.spec} (n=${r.n})`);
+  svg.selectAll('text.val').data(rows).join('text').attr('x',r=>x(r.ci_ejbi[1])+6).attr('y',r=>y(r.spec)+y.bandwidth()/2+4).attr('font-size',11).attr('fill',css('--muted')).text(r=>'r = '+fmt(r.r_ejbi,3));
+  svg.append('g').attr('class','axis').attr('transform',`translate(0,${Hh-m.b})`).call(d3.axisBottom(x).ticks(6));
+  scatter(document.getElementById('r-svi'),'svi22','ejbi','CDC county SVI 2022','County EJBI');
+}
+
+/* ---------------- 6. Methods and validation ---------------- */
+function renderMethods(){
+  const el=document.getElementById('v-methods'),V=D.validation,R=D.run;
+  const nm=V.filter(v=>v.status==='MATCH').length;
+  el.innerHTML=`<div class="panel"><h2>Validation against the paper</h2>
+    <p>Every number on this site is recomputed from the source files on each build. <b>${nm} of ${R.n_locked}</b> values locked in the paper are reproduced; if any stopped reproducing, the build would refuse to publish and the previous site would stay up. Permutation results are listed separately because they vary between runs by design.</p>
+    <p class="note">Run ${esc(R.run_utc)} · seed ${R.seed} · ${R.permutations.toLocaleString()} permutations · ${R.bootstrap.toLocaleString()} bootstrap resamples · gate <span class="pill ${R.gate==='PASS'?'ok':'bad'}">${R.gate}</span></p>
+    <div class="tbl"><table><tr><th>Check</th><th>Paper</th><th class="n">Paper value</th><th class="n">Reproduced</th><th>Status</th></tr>
+    ${V.map(v=>`<tr><td>${esc(v.check)}</td><td>${esc(v.section)}</td><td class="n">${v.paper}</td><td class="n">${typeof v.reproduced==='number'?(Number.isInteger(v.reproduced)?v.reproduced:v.reproduced.toFixed(4)):esc(v.reproduced)}</td><td><span class="pill ${v.status==='MATCH'?'ok':v.status==='MISMATCH'?'bad':'warn'}">${v.status==='PERMUTATION-SENSITIVE'?'Permutation-sensitive':v.status==='MATCH'?'Match':'Mismatch'}</span></td></tr>`).join('')}</table></div></div>
+  <div class="grid2"><div class="panel"><h2>Methods</h2><ol class="small">
+    <li><b>EJBI (tract).</b> Unweighted mean of CDC/ATSDR SVI overall rank, CalEnviroScreen 4.0 overall percentile and Pollution Burden percentile. Negative SVI codes are missing; EJBI is computed only when all three exist.</li>
+    <li><b>EJBI (county).</b> Population-weighted mean of valid tract EJBI (CalEnviroScreen population).</li>
+    <li><b>Scale effect (MAUP).</b> Suppression = 1 − Var(county EJBI) / Var(tract EJBI), sample variances of the same index. Hidden tracts: tract EJBI ≥ ${THR.tract} inside a county below ${THR.county}.</li>
+    <li><b>Primary OBI.</b> Join-expanded duplicate EAGLE-I rows removed (${int(R.eaglei.rows_raw)} → ${int(R.eaglei.rows_after_dedup)}); episodes 2018–2023 (${int(R.eaglei.rows_2018_2023)}); customer-outage-hours = mean customers × hours; summed by county; ÷ Modeled County Customers; clipped at 1.5 × IQR; scaled 0–1.</li>
+    <li><b>Climate Stress.</b> FEMA NRI risk scores for ${Object.values(D.hazards).join(', ')}, each min–max scaled across counties, equal-weight mean.</li>
+    <li><b>Statistics.</b> Pearson and Spearman on complete pairs; bootstrap CIs (5,000, fixed seed); Welch's test; Moran's I and LISA on queen contiguity with permutation inference.</li>
+    <li><b>Sensitivity.</b> Population denominator; excluding ceiling and floor episodes; 70% EAGLE-I / 30% EIA-861 historical reliability blend.</li></ol>
+    <p class="note">Thresholds are study-defined for internal comparison and are not California SB 535 disadvantaged-community designations.</p></div>
+  <div class="panel"><h2>Data and vintages</h2><table>${Object.entries(R.vintages).map(([k,v])=>`<tr><td class="small"><b>${esc(k)}</b></td><td class="small">${esc(v)}</td></tr>`).join('')}</table>
+    <p class="note">The tract SVI file used is the SVI 2018 release (2010 tracts), which matches the 2010-vintage tracts of CalEnviroScreen 4.0; the county comparison uses SVI 2022.</p>
+    <h3>Download</h3><p class="small"><a href="data/segda_tracts.csv" download>Tract results (CSV)</a> · <a href="data/segda_counties.csv" download>County results (CSV)</a> · <a href="data/segda_validation.csv" download>Validation (CSV)</a> · <a href="data/segda_climate_components.csv" download>Climate components (CSV)</a> · <a href="data/segda_results.json" download>All statistics (JSON)</a></p></div></div>
+  <div class="panel"><h2>Limitations</h2><ul class="small">
+    <li>EAGLE-I outage episodes are reconstructed from 15-minute county observations, with a ${S.sens_meta.floor_customers}-customer lower bound and a ${S.sens_meta.ceiling_hours}-hour duration ceiling from the upstream transformation.</li>
+    <li>EAGLE-I coverage changes over time; earlier years are less complete.</li>
+    <li>Source vintages differ (CalEnviroScreen 2021, SVI 2018 tract and 2022 county, FEMA NRI, EAGLE-I 2018–2023); these are cross-source spatial relationships, not a synchronised time series.</li>
+    <li>County associations are ecological. They cannot speak for any household, tract, feeder or circuit.</li></ul></div>
+  <div class="panel"><h2>How to cite</h2><p class="small">Franklin, V. L. Socio-Environmental Grid Disruption Analysis: A Multi-Scale Spatial Assessment of Energy Justice and Climate Resilience Across California Census Tracts and Counties, 2018–2023. Meharry Medical College, Nashville, Tennessee. Interactive companion: SEGDA SMART Grid.</p></div>`;
+}
+
+
+/* ---------------- 7. Data sources and audit ---------------- */
+const REFS=[
+ 'K. Jenkins, D. McCauley, R. Heffron, H. Stephan, R. Rehner. Energy justice: A conceptual review. <i>Energy Research &amp; Social Science</i> 11:174–182, 2016. <a href="https://doi.org/10.1016/j.erss.2015.10.004" target="_blank" rel="noopener">doi:10.1016/j.erss.2015.10.004</a>',
+ 'S. Carley, D. M. Konisky. The justice and equity implications of the clean energy transition. <i>Nature Energy</i> 5:569–577, 2020. <a href="https://doi.org/10.1038/s41560-020-0641-6" target="_blank" rel="noopener">doi:10.1038/s41560-020-0641-6</a>',
+ 'B. K. Sovacool, M. H. Dworkin. <i>Global Energy Justice: Problems, Principles, and Practices.</i> Cambridge University Press, 2014.',
+ 'S. Openshaw. <i>The Modifiable Areal Unit Problem.</i> CATMOG No. 38. Geo Books, 1984.',
+ 'S. J. Dark, D. Bram. The modifiable areal unit problem (MAUP) in physical geography. <i>Progress in Physical Geography</i> 31(5):471–479, 2007.',
+ 'California Office of Environmental Health Hazard Assessment. SB 535 Disadvantaged Communities: Final Designation. CalEPA, 2022.',
+ 'California Office of Environmental Health Hazard Assessment. CalEnviroScreen 4.0. CalEPA, 2021. <a href="https://oehha.ca.gov/calenviroscreen/report/calenviroscreen-40" target="_blank" rel="noopener">oehha.ca.gov/calenviroscreen</a>',
+ 'CDC/ATSDR Geospatial Research, Analysis, and Services Program. CDC/ATSDR Social Vulnerability Index Database and Documentation. <a href="https://www.atsdr.cdc.gov/place-health/php/svi/" target="_blank" rel="noopener">atsdr.cdc.gov/place-health/php/svi</a>',
+ 'C. Brelsford, S. Tennille, A. Myers, et al. A dataset of recorded electricity outages by United States county 2014–2022. <i>Scientific Data</i> 11:271, 2024. <a href="https://doi.org/10.1038/s41597-024-03095-5" target="_blank" rel="noopener">doi:10.1038/s41597-024-03095-5</a>',
+ 'C. Brelsford et al. EAGLE-I historic county outage data, Modeled County Customers (MCC), coverage history, and data-quality files. Figshare, 2023. <a href="https://doi.org/10.6084/m9.figshare.24237376" target="_blank" rel="noopener">doi:10.6084/m9.figshare.24237376</a>',
+ 'U.S. Energy Information Administration. Form EIA-861 Annual Electric Power Industry Report: Reliability and Operational Data, 2018–2023. <a href="https://www.eia.gov/electricity/data/eia861/" target="_blank" rel="noopener">eia.gov/electricity/data/eia861</a>',
+ 'Federal Emergency Management Agency. National Risk Index, county-level natural-hazard risk data and documentation. <a href="https://hazards.fema.gov/nri/" target="_blank" rel="noopener">hazards.fema.gov/nri</a>',
+ 'P. A. P. Moran. Notes on continuous stochastic phenomena. <i>Biometrika</i> 37(1–2):17–23, 1950. <a href="https://doi.org/10.1093/biomet/37.1-2.17" target="_blank" rel="noopener">doi:10.1093/biomet/37.1-2.17</a>',
+ 'L. Anselin. Local Indicators of Spatial Association—LISA. <i>Geographical Analysis</i> 27(2):93–115, 1995. <a href="https://doi.org/10.1111/j.1538-4632.1995.tb00338.x" target="_blank" rel="noopener">doi:10.1111/j.1538-4632.1995.tb00338.x</a>',
+ 'U.S. Census Bureau. TIGER/Line Shapefiles, 2019: census tracts and counties. <a href="https://www.census.gov/geographies/mapping-files/time-series/geo/tiger-line-file.html" target="_blank" rel="noopener">census.gov TIGER/Line</a>'];
+function renderAudit(){
+  const el=document.getElementById('v-audit'),A=D.audit,R=D.run;
+  const st=s=>s==='PASS'?'ok':s==='WARNING'?'warn':'bad';
+  const np=A.filter(a=>a.status==='PASS').length,nw=A.filter(a=>a.status==='WARNING').length,nf=A.filter(a=>a.status==='FAIL').length;
+  el.innerHTML=`<div class="panel"><h2>Data audit</h2>
+    <p>Before anything is computed, every input file is checked: present, expected columns, value ranges, coverage. <b>${np} passed, ${nw} warning${nw===1?'':'s'}, ${nf} failed.</b> A failure stops the build and the previous site stays published. Warnings are published with their explanation.</p>
+    <p class="note">No value on this site is simulated, estimated to fill a gap, or typed in by hand. Missing values stay missing and are shown as unavailable.</p>
+    <div class="tbl"><table><tr><th>Check</th><th>Result</th><th>Detail</th></tr>${A.map(a=>`<tr><td>${esc(a.component)}</td><td><span class="pill ${st(a.status)}">${a.status}</span></td><td class="small">${esc(a.detail)}</td></tr>`).join('')}</table></div></div>
+  <div class="panel"><h2>Data sources used in this run</h2>
+    <p class="note">Each file is identified by its SHA-256 fingerprint, so anyone can confirm they hold the same file.</p>
+    <div class="tbl"><table><tr><th>Dataset</th><th>Publisher</th><th>Vintage</th><th>Used for</th><th class="n">Rows</th><th>SHA-256</th></tr>
+    ${D.sources.map(s=>`<tr><td><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.name)}</a><div class="note small">${esc(s.file)}</div></td><td class="small">${esc(s.publisher)}</td><td class="small">${esc(s.year)}</td><td class="small">${esc(s.use)}</td><td class="n">${s.rows!=null?int(s.rows):'—'}</td><td class="small" style="font-family:monospace;word-break:break-all">${esc((s.sha256||'').slice(0,16))}…</td></tr>`).join('')}</table></div>
+    <p class="small"><a href="data/segda_sources.csv" download>Full source manifest with complete fingerprints (CSV)</a> · <a href="data/segda_audit.csv" download>Audit results (CSV)</a></p></div>
+  <div class="panel"><h2>References</h2><ol class="small">${REFS.map(r=>`<li>${r}</li>`).join('')}</ol></div>`;
+}
+/* ---------------- router ---------------- */
+const VIEWS={hidden:renderHidden,outage:renderOutage,relations:renderRelations,clusters:renderClusters,robust:renderRobust,methods:renderMethods,audit:renderAudit};
+const done={};
+function go(v){if(!VIEWS[v])v='hidden';
+  document.querySelectorAll('.view').forEach(s=>s.hidden=s.id!=='v-'+v);
+  document.querySelectorAll('nav a').forEach(a=>a.setAttribute('aria-current',String(a.dataset.go===v)));
+  if(!done[v]){VIEWS[v]();done[v]=1}
+  if(location.hash!=='#'+v) history.replaceState(null,'','#'+v); window.scrollTo(0,0)}
+document.addEventListener('click',e=>{const a=e.target.closest('[data-go]');if(a){e.preventDefault();go(a.dataset.go)}});
+document.getElementById('foot').innerHTML=`<b>SEGDA SMART Grid</b> · Built from the audited SEGDA reproducibility pipeline · Run ${esc(D.run.run_utc)} · Validation ${esc(D.run.gate)} (${D.run.n_locked-D.run.n_mismatch}/${D.run.n_locked} paper values reproduced; ${D.run.n_audit-D.run.n_audit_fail-D.run.n_audit_warn} data checks passed, ${D.run.n_audit_warn} warning) · <a href="#audit" data-go="audit">Data &amp; audit</a> · © 2026 Victoria Love Franklin, Meharry Medical College. A Franklin HUB SMART Center research platform.`;
+go(location.hash.slice(1)||'hidden');
+</script>
+</body>
+</html>

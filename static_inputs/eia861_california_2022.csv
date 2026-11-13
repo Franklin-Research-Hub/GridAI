@@ -1,0 +1,27 @@
+utility_number,utility_name,state,ownership,saidi_with_med,saifi_with_med,caidi_with_med,saidi_without_med,saifi_without_med,caidi_without_med,customers_ieee,saidi,saifi,caidi
+207.0,Alameda Municipal Power,CA,Municipal,12.366,0.09,137.4,12.366,0.09,137.4,35938.0,12.366,0.09,137.4
+590.0,City of Anaheim - (CA),CA,Municipal,25.49,0.438,58.196347,25.49,0.438,58.196347,117000.0,25.49,0.438,58.196347
+1050.0,City of Azusa,CA,Municipal,,,,46.591,0.568,82.026408,16967.0,,,
+2507.0,City of Burbank Water and Power,CA,Municipal,,,,,,,,,,
+4003.0,City of Colton - (CA),CA,Municipal,,,,,,,,,,
+7294.0,City of Glendale - (CA),CA,Municipal,,,,,,,,,,
+9216.0,Imperial Irrigation District,CA,Political Subdivision,64.52,0.72,89.611111,54.53,0.68,80.191176,159216.0,64.52,0.72,89.611111
+11124.0,City of Lodi - (CA),CA,Municipal,19.96,0.152,131.31579,9.44,0.15,62.933333,25418.0,19.96,0.152,131.31579
+11208.0,Los Angeles Department of Water & Power,CA,Municipal,108.86,0.74,147.10811,108.86,0.74,147.10811,1557281.0,108.86,0.74,147.10811
+12745.0,Modesto Irrigation District,CA,Political Subdivision,49.45,0.51,96.960784,49.45,0.51,96.960784,120443.0,49.45,0.51,96.960784
+14328.0,Pacific Gas & Electric Co.,CA,Investor Owned,326.4,1.778,183.57705,255.8,1.63,156.93252,5713342.0,326.4,1.778,183.57705
+14354.0,PacifiCorp,CA,Investor Owned,1045.869,3.826,273.35834,127.613,2.128,59.968515,47055.0,1045.869,3.826,273.35834
+14401.0,City of Palo Alto - (CA),CA,Municipal,97.13,0.82,118.45122,,,,29136.0,97.13,0.82,118.45122
+14534.0,City of Pasadena - (CA),CA,Municipal,26.014,0.219,118.78539,26.014,0.219,118.78539,66329.0,26.014,0.219,118.78539
+15783.0,City of Redding - (CA),CA,Municipal,16.89,0.275,61.418182,16.89,0.275,61.418182,45214.0,16.89,0.275,61.418182
+16088.0,City of Riverside - (CA),CA,Municipal,78.68,0.67,117.43284,73.5,0.64,114.84375,112230.0,78.68,0.67,117.43284
+16295.0,City of Roseville - (CA),CA,Municipal,,,,,,,,,,
+16534.0,Sacramento Municipal Util Dist,CA,Political Subdivision,,,,,,,,,,
+16609.0,San Diego Gas & Electric Co,CA,Investor Owned,70.39,0.591,119.10321,70.39,0.591,119.10321,1499269.0,70.39,0.591,119.10321
+16655.0,City of Santa Clara - (CA),CA,Municipal,,,,,,,,,,
+17609.0,Southern California Edison Co,CA,Investor Owned,131.121,1.08,121.40833,101.026,0.964,104.79876,5240509.0,131.121,1.08,121.40833
+17612.0,Bear Valley Electric Service,CA,Investor Owned,1075.626,3.831,280.76899,118.993,1.664,71.510216,24695.0,1075.626,3.831,280.76899
+19281.0,Turlock Irrigation District,CA,Political Subdivision,95.0,0.58,163.7931,68.0,0.5,136.0,89495.0,95.0,0.58,163.7931
+19798.0,City of Vernon,CA,Municipal,,,,,,,,,,
+55787.0,City of Moreno Valley - (CA),CA,Municipal,,,,,,,,,,
+57483.0,Liberty Utilities,CA,Investor Owned,1528.07,5.186,294.65291,471.67,3.546,133.01466,50151.0,1528.07,5.186,294.65291
