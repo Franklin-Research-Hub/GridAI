@@ -560,7 +560,10 @@ const US_MEAS = {
   obi:{lab:'Outage burden (OBI)', val:c=>c.obi, color:v=>burdenColor(v), leg:()=>burdenLegend('No outage data (or Connecticut)'),
     cap:'Primary Outage Burden Index on a national scale: 2018–2023 customer-outage-hours per modeled customer, clipped at 1.5×IQR and scaled 0–1 across all counties. Outages are recorded every 15 minutes and published as yearly files; see Methods for update schedules.'},
   cs:{lab:'Climate Stress', val:c=>c.cs, color:v=>burdenColor(v), leg:()=>burdenLegend(),
-    cap:'Equal-weight mean of seven FEMA NRI v1.20 hazard risk scores, each scaled 0–1 across all counties.'}
+    cap:'Equal-weight mean of seven FEMA NRI v1.20 hazard risk scores, each scaled 0–1 across all counties.'},
+  dme:{lab:'Electricity-dependent residents', val:c=>c.dme, color:v=>v==null?NODATA_DARK:css(SHARE_RAMP[d3.bisectRight([100,500,2000,5000],v)]),
+    leg:()=>`<div class="legend">${['Under 100','100–499','500–1,999','2,000–4,999','5,000 or more'].map((l,i)=>`<span><i style="background:${css(SHARE_RAMP[i])}"></i>${l}</span>`).join('')}<span><i style="background:${NODATA_DARK}"></i>Not joined (Connecticut planning regions; Chugach and Copper River, AK)</span></div>`,
+    cap:'Medicare beneficiaries who rely on electricity-dependent medical equipment, from the HHS emPOWER public data service (data as of 9 Nov 2026). HHS raises counts in small counties to protect privacy, so the smallest rural counties read slightly high.'}
 };
 function renderUS(){
   const el=document.getElementById('v-us');
@@ -601,6 +604,7 @@ function renderUS(){
     <div class="tbl"><table id="u-tab"></table></div>
     <p class="small"><a href="${NDIR}national_states.csv" download>States (CSV)</a> · <a href="${NDIR}national_counties.csv" download>Counties (CSV)</a> · <a href="${NDIR}national_tracts.csv" download>Tracts (CSV)</a></p></div>
   ${screenPanel()}
+  ${empowerPanel()}
   <div class="grid2">
     <div class="panel"><h2>Does outage burden follow burden nationally?</h2>${natRelations()}</div>
     <div class="panel"><h2>Checked against the paper</h2>${natConcordance()}</div>
@@ -613,6 +617,18 @@ function renderUS(){
   el.querySelector('#u-hid').onchange=e=>{US.showHidden=e.target.checked;drawState()};
   const ss=el.querySelector('#u-st'); ss.value=US.state; ss.onchange=()=>{US.state=ss.value;US.county=null;drawState()};
   drawUSMap(); drawState(); drawStateTable();
+}
+function empowerPanel(){
+  const E=N.empower; if(!E) return '';
+  const S=E.summary, pass=E.audit.filter(a=>a.result==='PASS').length;
+  const rows=E.top.map(r=>`<tr><td>${esc(r.county)}</td><td class="n">${int(r.power_dependent_dme)}</td><td class="n">${int(r.medicare_benes)}</td><td class="n">${fmt(r.obi,3)}</td><td class="n">${r.ejbi==null?'—':fmt(r.ejbi,3)}</td><td class="n">${int(r.hidden_tracts)}</td></tr>`).join('');
+  return `<div class="panel" id="u-empower"><div class="eb">Health risk · HHS emPOWER</div><h2>Electricity-dependent residents <span class="g">where outages hit hardest</span></h2>
+  <p style="max-width:820px;color:#3d424d"><b>${int(S.dme_obi_high)}</b> Medicare beneficiaries who rely on electricity-dependent medical equipment, such as ventilators, oxygen concentrators and home dialysis, live in the ${int(S.counties_obi_high)} counties in the top quarter of outage burden (OBI \u2265 ${fmt(S.obi_high_threshold,3)}): ${pct(S.dme_obi_high_pct,1)} of the ${(S.dme_with_obi/1e6).toFixed(2)} million in counties with outage data. ${int(S.dme_obi_high_and_hidden)} of them live in high-outage counties that also hide high-burden tracts (${int(S.counties_obi_high_and_hidden)} counties).</p>
+  <p style="max-width:820px;color:#3d424d">Electricity dependence is about as common in high-outage counties (${fmt(S.rate_obi_high,1)} per 1,000 Medicare beneficiaries) as elsewhere (${fmt(S.rate_other,1)}), and it barely tracks outage burden (r = ${fmt(S.r_rate_obi,3)}). Outage maps alone will not find these residents; the two have to be laid over each other, which the map's <b>Electricity-dependent residents</b> option and this table do.</p>
+  <h3>High-outage counties with the most electricity-dependent residents</h3>
+  <div class="tbl"><table><tr><th>County</th><th class="n">Electricity-dependent</th><th class="n">Medicare beneficiaries</th><th class="n">OBI</th><th class="n">County EJBI</th><th class="n">Hidden tracts</th></tr>${rows}</table></div>
+  <p class="note small"><b>What this shows and does not.</b> It shows who is most exposed when the power goes out. It does not measure health outcomes: emPOWER counts people with equipment, not illness or deaths during outages. Counts cover Medicare Fee-For-Service and Medicare Advantage only, so people on Medicaid alone or private insurance are not included. HHS shows counts of 1\u201310 as 11 and raises other small-county counts to protect privacy; county totals run ${fmt(S.county_excess_over_state_pct,2)}% above HHS state totals nationally, most in rural states. Connecticut planning regions and two Alaska census areas are not joined because HHS uses older boundaries there. ${pass} of ${E.audit.length} checks passed on this build.</p>
+  <p class="small">Source: <a href="https://empowerprogram.hhs.gov/empower-rest.html" target="_blank" rel="noopener">HHS emPOWER public REST Service</a> (ASPR with CMS), county layer, data as of ${esc(E.source.data_last_edited)}, retrieved ${esc(E.source.retrieved)}. <a href="${NDIR}national_empower_counties.csv" download>County join (CSV)</a> \u00b7 <a href="${NDIR}national_empower_audit.csv" download>emPOWER checks (CSV)</a></p></div>`;
 }
 function screenPanel(){
   const S=N.screen; if(!S) return '';
@@ -661,7 +677,7 @@ async function drawUSMap(){
   g.selectAll('path').data(cfc.features).join('path').attr('d',path).attr('fill',d=>{const c=NC[d.properties.GEOID];return c?M.color(M.val(c)):(US.measure==='hidden'?NODATA_DARK:css('--nodata'))})
     .attr('stroke','#fff').attr('stroke-width',.15)
     .on('mousemove',(e,d)=>{const c=NC[d.properties.GEOID];if(!c)return;const s=NS[c.STATEFP]||{};
-      showTip(e,`<b>${esc(c.NAME)}, ${esc(s.abbr)}</b><div>County EJBI ${fmt(c.ejbi)} · CDC SVI ${fmt(c.svi_c)}</div><div>${int(c.tracts_high)} high-burden tracts; ${int(c.masked_tracts)} hidden (${int(c.masked_pop)} people)</div><div>OBI ${fmt(c.obi)} · Climate Stress ${fmt(c.cs)}</div>`)})
+      showTip(e,`<b>${esc(c.NAME)}, ${esc(s.abbr)}</b><div>County EJBI ${fmt(c.ejbi)} · CDC SVI ${fmt(c.svi_c)}</div><div>${int(c.tracts_high)} high-burden tracts; ${int(c.masked_tracts)} hidden (${int(c.masked_pop)} people)</div><div>OBI ${fmt(c.obi)} · Climate Stress ${fmt(c.cs)}</div>${c.dme!=null?`<div>${int(c.dme)} electricity-dependent Medicare beneficiaries</div>`:''}`)})
     .on('mouseleave',hideTip).on('click',(e,d)=>{const c=NC[d.properties.GEOID];if(!c)return;US.state=c.STATEFP;US.county=c.fips5;document.getElementById('u-st').value=US.state;drawState();document.getElementById('u-state-panel').scrollIntoView({behavior:'smooth'})});
   g.append('path').attr('d',path(topojson.mesh(stt,so,(a,b)=>a!==b))).attr('fill','none').attr('stroke','#0f1f33').attr('stroke-width',.6).attr('pointer-events','none');
   svg.call(d3.zoom().scaleExtent([1,12]).on('zoom',e=>g.attr('transform',e.transform)));

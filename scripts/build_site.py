@@ -46,9 +46,20 @@ def national(nb, dst):
               "national_audit.csv", "national_sources.csv"]:
         shutil.copyfile(nb / f, out / f)
     c = pd.read_csv(nb / "national_counties.csv", dtype={"fips5": str, "STATEFP": str})
+    # HHS emPOWER electricity-dependent Medicare beneficiaries, joined and checked on every build.
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from empower_layer import compute as empower
+    EP = empower(nb)
+    if EP["gate"] != "PASS":
+        sys.exit("emPOWER checks failed: " + "; ".join(a["check"] for a in EP["audit"] if a["result"] != "PASS"))
+    EP["counties"].to_csv(out / "national_empower_counties.csv", index=False)
+    pd.DataFrame(EP["audit"]).to_csv(out / "national_empower_audit.csv", index=False)
+    for f in ("empower_county_2026-11.csv", "empower_state_2026-11.csv"):
+        shutil.copyfile(nb / "empower" / f, out / f)
+    c = c.merge(EP["counties"][["fips5", "power_dependent_dme", "dme_rate"]].rename(columns={"power_dependent_dme": "dme"}), on="fips5", how="left")
     keep = ["fips5", "STATEFP", "NAME", "pop", "ejbi", "svi_c", "obi", "cs", "tracts", "tracts_valid", "tracts_high",
             "pop_high", "tract_min", "tract_max", "masked_tracts", "masked_pop", "svi_tracts_high", "svi_hidden_tracts",
-            "svi_hidden_pop", "lisa_ejbi", "lisa_obi"]
+            "svi_hidden_pop", "lisa_ejbi", "lisa_obi", "dme", "dme_rate"]
     rows = [[(num(v) if isinstance(v, float) else v) for v in r] for r in c[keep].itertuples(index=False)]
     s = pd.read_csv(nb / "national_states.csv", dtype={"statefp": str})
     states = [{k: (num(v) if isinstance(v, float) else v) for k, v in r.items()} for r in s.to_dict("records")]
@@ -60,7 +71,7 @@ def national(nb, dst):
         sys.exit("Screening-rule checks failed: " + "; ".join(a["check"] for a in SR["audit"] if a["result"] != "PASS"))
     pd.DataFrame(SR["rules"]).to_csv(out / "national_screening.csv", index=False)
     pd.DataFrame(SR["audit"]).to_csv(out / "national_screening_audit.csv", index=False)
-    return {"screen": SR, "run": R["run"], "nat": R["national"], "rel": R["relations"], "spatial": R["spatial"], "conc": R["concordance"],
+    return {"empower": {k: EP[k] for k in ("summary", "top", "audit", "source")}, "screen": SR, "run": R["run"], "nat": R["national"], "rel": R["relations"], "spatial": R["spatial"], "conc": R["concordance"],
             "audit": R["audit"], "sources": R["sources"], "hazards": R["hazards"], "thr": R["thresholds"],
             "ccols": keep, "counties": rows, "states": states}
 
