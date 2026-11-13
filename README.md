@@ -1,6 +1,6 @@
 # GridAI™ · SEGDA
 
-**Live site: https://franklin-research-hub.github.io/GridAI/**
+**Live site: [gridaitm.com](https://gridaitm.com/)**
 
 The Socio-Environmental Grid Disruption Analysis (SEGDA) examines environmental justice, county-level power-outage burden, and climate stress across California's census tracts and counties. It tests how geographic aggregation changes measured burden and considers implications for equitable resilience and public health preparedness.
 
@@ -150,6 +150,6 @@ bash scripts/make_national_topo.sh national_out
 
 ## Citation
 
-Franklin, V. L. SEGDA: Socio-Environmental Grid Disruption Analysis. Franklin HUB SMART Center.
+Franklin, V. L. SEGDA: Socio-Environmental Grid Disruption Analysis. Franklin HUB SMART Center. https://gridaitm.com/
 
 © 2026 Victoria Love Franklin. All rights reserved. Source datasets remain under their publishers' terms. Most are U.S. federal or State of California public data.

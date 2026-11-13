@@ -96,6 +96,7 @@ def main(src, dst, nb=None):
     dst.mkdir(parents=True, exist_ok=True)
     (dst / "index.html").write_text(html, encoding="utf-8")
     (dst / ".nojekyll").write_text("")
+    (dst / "CNAME").write_text("gridaitm.com\n")   # custom domain for GitHub Pages
     dl = dst / "data"
     dl.mkdir(exist_ok=True)
     for f in ["segda_counties.csv", "segda_tracts.csv", "segda_validation.csv",
