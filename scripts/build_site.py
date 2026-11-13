@@ -97,6 +97,13 @@ def main(src, dst, nb=None):
     (dst / "index.html").write_text(html, encoding="utf-8")
     (dst / ".nojekyll").write_text("")
     (dst / "CNAME").write_text("gridaitm.com\n")   # custom domain for GitHub Pages
+    (dst / "robots.txt").write_text("User-agent: *\nAllow: /\n\nSitemap: https://gridaitm.com/sitemap.xml\n")
+    import datetime as _dt
+    (dst / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f'  <url><loc>https://gridaitm.com/</loc><lastmod>{_dt.date.today().isoformat()}</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>\n'
+        '</urlset>\n')
     dl = dst / "data"
     dl.mkdir(exist_ok=True)
     for f in ["segda_counties.csv", "segda_tracts.csv", "segda_validation.csv",
