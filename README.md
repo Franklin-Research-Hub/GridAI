@@ -1,8 +1,20 @@
-# SEGDA SMART Grid
+# GridAI™ · SEGDA
 
-**Socio-Environmental Grid Disruption Analysis: how county averages hide census-tract burden.**
+The Socio-Environmental Grid Disruption Analysis (SEGDA) examines environmental justice, county-level power-outage burden, and climate stress across California's census tracts and counties. It tests how geographic aggregation changes measured burden and considers implications for equitable resilience and public health preparedness.
 
-An interactive site built from the SEGDA paper (Franklin, Meharry Medical College). It shows the same environmental-justice burden index at two scales, 7,931 California census tracts and 58 counties. Switching between them shows high-burden neighbourhoods disappearing into moderate county colours: the modifiable areal unit problem (MAUP).
+**Developer and Author:** Victoria Love Franklin, Franklin HUB SMART Center.
+
+**Keywords:** GridAI, SEGDA, Socio-Environmental Grid Disruption Analysis, energy justice, environmental justice, power outage burden, grid resilience, climate resilience, public health equity, census tract analysis, modifiable areal unit problem (MAUP), CDC Social Vulnerability Index, Environmental Justice Index, EAGLE-I, FEMA National Risk Index, geospatial analytics, GIS.
+
+
+**Socio-Environmental Grid Disruption Analysis: how county averages hide census-tract burden, across the United States.**
+
+The site has two parts. The California case study came first, and it led to the national study:
+
+- **National study** (all 50 states and DC, 84,095 census tracts, 3,144 counties). The paper's methods are applied with national federal data. County averaging erases 72.7% of tract-level variation in the national burden index. It hides 7,803 high-burden tracts, home to 28.3 million people, inside 890 counties that do not look high.
+- **California case study.** The original SEGDA analysis, reproduced exactly from the paper's own files (31/31 locked values). Its finding that county averages hide high-burden tracts prompted the national study.
+
+An interactive site built from the SEGDA paper (Franklin). It shows the same environmental-justice burden index at two scales, 7,931 California census tracts and 58 counties. Switching between them shows high-burden neighbourhoods disappearing into moderate county colours: the modifiable areal unit problem (MAUP).
 
 The site is rebuilt by GitHub Actions on every push. Before anything is published:
 
@@ -85,6 +97,44 @@ python scripts/build_site.py out site                  # refuses unless gate = P
 # open site/index.html
 ```
 
+## National study
+
+See the site's Methods page for how often each source is reported and updated. EAGLE-I records outages every 15 minutes and publishes yearly files; SVI is released every two years; NRI and EJI periodically.
+
+`pipeline/segda_national.py` applies the paper's methods nationally. Every change from the California study is forced by the available data and is stated on the site:
+
+| Element | California study | National layer |
+|---|---|---|
+| Burden index | mean(SVI, CalEnviroScreen %ile, Pollution Burden %ile) | mean(CDC SVI 2022 `RPL_THEMES`, CDC/ATSDR EJI 2024 `RPL_EJI`, EJI `RPL_EBM`) |
+| Tracts | 2010 (TIGER 2019) | 2020 (TIGER 2022), land tracts only |
+| Outages | Paper's EAGLE-I file | Public OEDI release of the same EAGLE-I merged episodes (PNNL submission 6458, v2), with the same method |
+| Climate Stress | NRI study vintage, scaled within CA | NRI v1.20, scaled nationally; Inland Flooding replaces Riverine Flooding |
+
+The national inputs total about 655 MB, so they are not committed. They are official files downloaded from their publishers, and their SHA-256 fingerprints are recorded in `national_inputs.sha256` and checked by the pipeline. The committed `national_build/` folder holds the pipeline's outputs and audit, and the site build refuses to run unless its gate is PASS. To regenerate:
+
+```bash
+python pipeline/segda_national.py national_inputs static_inputs out national_out
+bash scripts/make_national_topo.sh national_out
+# copy national_out/*.csv, *.json and topo/ into national_build/
+```
+
+**Gate checks against the paper (California counties):**
+
+| Check | Result |
+|---|---|
+| Primary OBI, public release vs paper file | r = 0.987 |
+| County EJBI, national vs CalEnviroScreen version | r = 0.807 |
+| Climate Stress | r = 0.997 |
+| Variance suppression | 72.27% (paper 67.82%) |
+
+**Known gaps, left missing rather than filled:**
+
+- EJI 2024 has no ranks for Alaska and Hawaii.
+- Connecticut planning regions do not nest the former counties that EAGLE-I uses, so Connecticut has no OBI.
+- 30 counties lack an NRI heat-wave score.
+
+**National finding:** the EJBI–OBI association is near zero nationally (r = 0.054), and its sign differs by state. California's negative association (r = −0.44) is not a national pattern.
+
 ## Known notes
 
 - **SVI vintage.** The tract SVI file supplied is the 2018 release (2010 tract geography). The paper's Table 1 lists SVI 2022. All locked results reproduce from the 2018 file, so the file is right and the table label may need an erratum. The site labels the vintage.
@@ -98,6 +148,6 @@ python scripts/build_site.py out site                  # refuses unless gate = P
 
 ## Citation
 
-Franklin, V. L. SEGDA: Socio-Environmental Grid Disruption Analysis. Meharry Medical College, Franklin HUB SMART Center.
+Franklin, V. L. SEGDA: Socio-Environmental Grid Disruption Analysis. Franklin HUB SMART Center.
 
 © 2026 Victoria Love Franklin. All rights reserved. Source datasets remain under their publishers' terms. Most are U.S. federal or State of California public data.

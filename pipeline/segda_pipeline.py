@@ -236,7 +236,7 @@ def primary_obi(eag, mcc):
     e = eag.drop_duplicates(["fips", "start_time", "duration", "min_customers",
                              "max_customers", "mean_customers"]).copy()
     n_raw, n_dedup = len(eag), len(e)
-    e["start"] = pd.to_datetime(e["start_time"], format="%m/%d/%Y %H:%M", errors="coerce")
+    e["start"] = pd.to_datetime(e["start_time"], format="mixed", errors="coerce")
     e = e[e["start"].dt.year.between(*YEARS)].copy()
     e["coh"] = e["mean_customers"] * e["duration"]
     m = mcc[mcc["County_FIPS"].astype(str) != "Grand Total"].copy()
@@ -264,7 +264,7 @@ def obi_variants(eag, mcc, county_pop):
     or the 200-customer floor of the upstream reconstruction."""
     e = eag.drop_duplicates(["fips", "start_time", "duration", "min_customers",
                              "max_customers", "mean_customers"]).copy()
-    e["start"] = pd.to_datetime(e["start_time"], format="%m/%d/%Y %H:%M", errors="coerce")
+    e["start"] = pd.to_datetime(e["start_time"], format="mixed", errors="coerce")
     e = e[e["start"].dt.year.between(*YEARS)].copy()
     e["coh"] = e["mean_customers"] * e["duration"]
     m = mcc[mcc["County_FIPS"].astype(str) != "Grand Total"].copy()

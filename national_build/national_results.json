@@ -1,0 +1,1195 @@
+{
+ "national": {
+  "tracts": 84095,
+  "tracts_valid": 82740,
+  "counties": 3144,
+  "tracts_high": 15337,
+  "counties_high": 474,
+  "var_tract": 0.057644,
+  "var_county": 0.015763,
+  "suppressed_pct": 72.654277,
+  "masked_tracts": 7803,
+  "masked_pop": 28338928,
+  "masked_counties": 890,
+  "svi_hidden_tracts": 8016,
+  "svi_hidden_pop": 31315516,
+  "svi_hidden_counties": 1213,
+  "pop": 331097593,
+  "within_state_suppressed_median": 79.071292,
+  "states_with_masked": 49,
+  "obi_counties": 2952,
+  "outage_rows": 1479161,
+  "outage_rows_used": 1013356,
+  "obi_mean": 0.326516,
+  "obi_sd": 0.306476,
+  "cs_counties": 3114,
+  "cs_mean": 0.50154
+ },
+ "relations": {
+  "ejbi_obi": {
+   "n": 2941,
+   "pearson": 0.053987,
+   "p": 0.003404096805607279,
+   "spearman": 0.066585,
+   "spearman_p": 0.00030214285083725664,
+   "ci": [
+    0.015201,
+    0.090857
+   ]
+  },
+  "ejbi_cs": {
+   "n": 3109,
+   "pearson": 0.200708,
+   "p": 1.2849384223149784e-29,
+   "spearman": 0.185338,
+   "spearman_p": 2.0014592171045283e-25,
+   "ci": [
+    0.165431,
+    0.235056
+   ]
+  },
+  "cs_obi": {
+   "n": 2945,
+   "pearson": -0.06261,
+   "p": 0.0006748320850411153,
+   "spearman": -0.026101,
+   "spearman_p": 0.1567510969767326,
+   "ci": [
+    -0.096796,
+    -0.026964
+   ]
+  },
+  "svi_obi": {
+   "n": 2952,
+   "pearson": 0.171706,
+   "p": 5.7179589052046194e-21,
+   "spearman": 0.172418,
+   "spearman_p": 3.9224391314051885e-21,
+   "ci": [
+    0.136095,
+    0.206732
+   ]
+  },
+  "welch": {
+   "n_high": 455,
+   "n_other": 2486,
+   "mean_high": 0.35342,
+   "mean_other": 0.321604,
+   "t": 1.964709,
+   "p": 0.04989879702461328
+  }
+ },
+ "spatial": {
+  "ejbi": {
+   "n": 3109,
+   "I": 0.418024,
+   "p": 0.0001,
+   "counts": {
+    "HH": 450,
+    "LL": 442,
+    "LH": 54,
+    "HL": 78
+   }
+  },
+  "obi": {
+   "n": 2941,
+   "I": 0.547698,
+   "p": 0.0001,
+   "counts": {
+    "HH": 446,
+    "LL": 639,
+    "LH": 70,
+    "HL": 24
+   }
+  }
+ },
+ "concordance": {
+  "obi_r": 0.986505,
+  "obi_n": 56,
+  "ejbi_r": 0.807107,
+  "ejbi_n": 57,
+  "cs_r": 0.996646,
+  "ca_suppressed_national_method": 72.274678,
+  "ca_suppressed_paper": 67.82
+ },
+ "runtime_s": 283.1,
+ "run": {
+  "gate": "PASS",
+  "audit_pass": 81,
+  "audit_warn": 0,
+  "audit_fail": 0,
+  "timestamp": "2026-11-13T16:28:02Z"
+ },
+ "audit": [
+  {
+   "check": "Fingerprint: SVI_2022_US.csv",
+   "result": "PASS",
+   "detail": "matches the file downloaded from the publisher"
+  },
+  {
+   "check": "File present: SVI_2022_US.csv",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "Fingerprint: SVI_2022_US_county.csv",
+   "result": "PASS",
+   "detail": "matches the file downloaded from the publisher"
+  },
+  {
+   "check": "File present: SVI_2022_US_county.csv",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "Fingerprint: EJI_2024_United_States_CSV.zip",
+   "result": "PASS",
+   "detail": "matches the file downloaded from the publisher"
+  },
+  {
+   "check": "File present: EJI_2024_United_States_CSV.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "Fingerprint: OEDI6458_Outage_Dataset_R1.zip",
+   "result": "PASS",
+   "detail": "matches the file downloaded from the publisher"
+  },
+  {
+   "check": "File present: OEDI6458_Outage_Dataset_R1.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "Fingerprint: NRI_Table_Counties_v120.zip",
+   "result": "PASS",
+   "detail": "matches the file downloaded from the publisher"
+  },
+  {
+   "check": "File present: NRI_Table_Counties_v120.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_us_county.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_us_state.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_01_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_02_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_04_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_05_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_06_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_08_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_09_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_10_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_11_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_12_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_13_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_15_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_16_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_17_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_18_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_19_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_20_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_21_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_22_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_23_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_24_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_25_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_26_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_27_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_28_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_29_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_30_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_31_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_32_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_33_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_34_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_35_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_36_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_37_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_38_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_39_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_40_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_41_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_42_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_44_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_45_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_46_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_47_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_48_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_49_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_50_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_51_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_53_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_54_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_55_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "File present: tiger2022/tl_2022_56_tract.zip",
+   "result": "PASS",
+   "detail": "found"
+  },
+  {
+   "check": "Tract universe (TIGER 2022, 50 states + DC)",
+   "result": "PASS",
+   "detail": "84,095 land tracts (320 water-only tracts excluded)"
+  },
+  {
+   "check": "County universe (TIGER 2022, 50 states + DC)",
+   "result": "PASS",
+   "detail": "3,144 counties and county equivalents"
+  },
+  {
+   "check": "SVI tract file is the national release",
+   "result": "PASS",
+   "detail": "84,120 tracts, 51 states + DC"
+  },
+  {
+   "check": "TIGER tracts found in SVI 2022",
+   "result": "PASS",
+   "detail": "100.00% of TIGER 2022 tracts"
+  },
+  {
+   "check": "SVI tract ranks in 0-1 or suppressed",
+   "result": "PASS",
+   "detail": "778 tracts with no rank (CDC code -999), left missing"
+  },
+  {
+   "check": "SVI county file covers all counties",
+   "result": "PASS",
+   "detail": "3,144 counties"
+  },
+  {
+   "check": "TIGER tracts found in EJI 2024",
+   "result": "PASS",
+   "detail": "100.00% of TIGER 2022 tracts"
+  },
+  {
+   "check": "EJI 2024 ranks for Alaska and Hawaii",
+   "result": "PASS",
+   "detail": "EJI 2024 publishes no ranks for AK and HI (-999); national EJBI is left missing there, SVI views still cover them"
+  },
+  {
+   "check": "EJI RPL_EJI in 0-1 or missing",
+   "result": "PASS",
+   "detail": "1,382 tracts without a rank, left missing"
+  },
+  {
+   "check": "EJI RPL_EBM in 0-1 or missing",
+   "result": "PASS",
+   "detail": "1,369 tracts without a rank, left missing"
+  },
+  {
+   "check": "NRI covers all counties",
+   "result": "PASS",
+   "detail": "3,144 of 3,144 counties; version December 2025"
+  },
+  {
+   "check": "NRI hazard scores in 0-100",
+   "result": "PASS",
+   "detail": "all seven hazard risk scores in range; Drought missing for 88 counties, Heat wave missing for 118 counties, Wildfire missing for 88 counties, Inland flooding missing for 88 counties, Earthquake missing for 88 counties, Strong wind missing for 88 counties, Tornado missing for 88 counties (Climate Stress left missing there)"
+  },
+  {
+   "check": "Outage episodes have positive durations and customers",
+   "result": "PASS",
+   "detail": "1,487,181 episode rows, 2018-2023 files"
+  },
+  {
+   "check": "Outage dates parse",
+   "result": "PASS",
+   "detail": "0 rows with unreadable dates"
+  },
+  {
+   "check": "California Primary OBI: public release vs the paper's file",
+   "result": "PASS",
+   "detail": "Pearson r = 0.987 across 56 counties, same method, California-only scaling (threshold 0.95)"
+  },
+  {
+   "check": "California county EJBI: national version vs the paper's CalEnviroScreen version",
+   "result": "PASS",
+   "detail": "Pearson r = 0.807 across 57 counties (threshold 0.80; different components and tract vintages)"
+  },
+  {
+   "check": "California Climate Stress: NRI v1.20 national scaling vs the paper",
+   "result": "PASS",
+   "detail": "Pearson r = 0.997 across 57 counties (threshold 0.80; newer NRI version, national scaling)"
+  },
+  {
+   "check": "California variance suppression survives the change of index",
+   "result": "PASS",
+   "detail": "72.27% with the national EJBI vs 67.82% in the paper"
+  }
+ ],
+ "sources": [
+  {
+   "file": "SVI_2022_US.csv",
+   "name": "CDC/ATSDR Social Vulnerability Index 2022, U.S. census tracts (national ranking)",
+   "publisher": "CDC/ATSDR Geospatial Research, Analysis, and Services Program",
+   "year": "2022 (ACS 2018-2022; 2020 tracts)",
+   "url": "https://svi.cdc.gov/Documents/Data/2022/csv/states/SVI_2022_US.csv",
+   "use": "Tract SVI rank (RPL_THEMES) and tract population (E_TOTPOP)",
+   "present": true,
+   "sha256": "58df3dca3d4194879ffbd4b5e753eae48676ef691da1fa669f5fc40c3f79bc6a",
+   "bytes": 61102059
+  },
+  {
+   "file": "SVI_2022_US_county.csv",
+   "name": "CDC/ATSDR Social Vulnerability Index 2022, U.S. counties (national ranking)",
+   "publisher": "CDC/ATSDR Geospatial Research, Analysis, and Services Program",
+   "year": "2022",
+   "url": "https://svi.cdc.gov/Documents/Data/2022/csv/states_counties/SVI_2022_US_county.csv",
+   "use": "County SVI rank: what a county-level screen sees",
+   "present": true,
+   "sha256": "bc47d244153e359d5c09f621a4bf344a1e593159c16fbd3c28a15461b70a6c0f",
+   "bytes": 2301480
+  },
+  {
+   "file": "EJI_2024_United_States_CSV.zip",
+   "name": "CDC/ATSDR Environmental Justice Index 2024, United States",
+   "publisher": "CDC/ATSDR Geospatial Research, Analysis, and Services Program",
+   "year": "2024 (2020 tracts)",
+   "url": "https://eji.cdc.gov/Documents/Data/2024/2024_CSV/EJI_2024_United_States_CSV.zip",
+   "use": "Tract EJI rank (RPL_EJI) and Environmental Burden Module rank (RPL_EBM)",
+   "present": true,
+   "sha256": "cd483729f44b28358376240be8bca0ff985916acd833dece180357609aaba297",
+   "bytes": 24886251
+  },
+  {
+   "file": "OEDI6458_Outage_Dataset_R1.zip",
+   "name": "Event-correlated Outage Dataset in America (EAGLE-I merged outages, v2)",
+   "publisher": "Pacific Northwest National Laboratory, via DOE Open Energy Data Initiative",
+   "year": "2014-2023 (2018-2023 used)",
+   "url": "https://data.openei.org/files/6458/Outage_Dataset_R1.zip",
+   "use": "County customer-outage-hours for Primary OBI",
+   "present": true,
+   "sha256": "44557bae7a5c8e02c611a14f75fe9e123d81d286f700b9fd88ac538edd910fe7",
+   "bytes": 31260449
+  },
+  {
+   "file": "NRI_Table_Counties_v120.zip",
+   "name": "National Risk Index, county table, v1.20",
+   "publisher": "Federal Emergency Management Agency",
+   "year": "December 2025 (v1.20)",
+   "url": "https://www.fema.gov/about/reports-and-data/openfema/nri/v120/NRI_Table_Counties.zip",
+   "use": "Seven hazard risk scores for Climate Stress",
+   "present": true,
+   "sha256": "b99dae90a317b16630d7f9b1faa4a2784d5ca458761c1d3ab9646f046df9d072",
+   "bytes": 24966535
+  },
+  {
+   "file": "tiger2022/tl_2022_us_county.zip",
+   "name": "TIGER/Line Shapefiles 2022, U.S. counties",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/COUNTY/tl_2022_us_county.zip",
+   "use": "County geometry and contiguity",
+   "present": true,
+   "sha256": "a48c6e018d80e5557720971831a37120450f02c6d934687ccb3c26314ae8bda6",
+   "bytes": 83324165
+  },
+  {
+   "file": "tiger2022/tl_2022_us_state.zip",
+   "name": "TIGER/Line Shapefiles 2022, U.S. states",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/STATE/tl_2022_us_state.zip",
+   "use": "State outlines",
+   "present": true,
+   "sha256": "9f3a8f72d40f7531dc10b83af742a2071170cdaf9abb88576faf4d0621770454",
+   "bytes": 9967184
+  },
+  {
+   "file": "tiger2022/tl_2022_01_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 01",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_01_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "9bb8e9749f357edc7955279dd313be7fa47a472eb621bd3b9b83eb57d3094aa4",
+   "bytes": 11730278
+  },
+  {
+   "file": "tiger2022/tl_2022_02_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 02",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_02_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "d1b56cfbfe6f5f7abf328945e3adafcc7f1892e41f87f87930116b86000b3d6c",
+   "bytes": 3161807
+  },
+  {
+   "file": "tiger2022/tl_2022_04_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 04",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_04_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "490501b1e52482e613949a2cdf969a3322b4f376ed8cff9cccc9f88a8c91fe6d",
+   "bytes": 8481158
+  },
+  {
+   "file": "tiger2022/tl_2022_05_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 05",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_05_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "b1bc233f3276274e612791b264849f31a084982310f6e3b4087f99b3b9495231",
+   "bytes": 10547222
+  },
+  {
+   "file": "tiger2022/tl_2022_06_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 06",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_06_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "5a30a9d6e19d6bc79668f1f50f860d72b2d62e89d26a83f97bad499212b864e1",
+   "bytes": 32437845
+  },
+  {
+   "file": "tiger2022/tl_2022_08_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 08",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_08_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "865fcfa22f13f75b66e6ba958abf39dd3ea50ceaf7d32e468d9b34a8e910f74b",
+   "bytes": 8343856
+  },
+  {
+   "file": "tiger2022/tl_2022_09_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 09",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_09_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "0ba5cc457c43741c9f021102604ade387355a0a7eb19603ffdc71b3ec67a3ea8",
+   "bytes": 2712989
+  },
+  {
+   "file": "tiger2022/tl_2022_10_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 10",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_10_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "77ffabc51b523e05a1f368d6bbeb0212dadab7200467ec2791492a2aa9e98b73",
+   "bytes": 1099624
+  },
+  {
+   "file": "tiger2022/tl_2022_11_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 11",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_11_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "49b9d9d3a22443764df8da9d7ae7323a797a82aeab22331f5c0aa9e875b46a07",
+   "bytes": 367368
+  },
+  {
+   "file": "tiger2022/tl_2022_12_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 12",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_12_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "27283a2fe596f893029429aa7a0d11d6619637968b0acb72316456c5dcce19f8",
+   "bytes": 13684294
+  },
+  {
+   "file": "tiger2022/tl_2022_13_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 13",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_13_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "ff77683393988d92d4e69a25f3a1c6ade50df6bcf578d0fe544940406b5094fd",
+   "bytes": 15862268
+  },
+  {
+   "file": "tiger2022/tl_2022_15_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 15",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_15_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "8b24db28db2cd27d88368a5f7a72b2e482c47cefb0b06b00e93bb5332239d865",
+   "bytes": 1767549
+  },
+  {
+   "file": "tiger2022/tl_2022_16_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 16",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_16_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "30d20aa8602bff1deabf667385a090d3a8344fac30c9802b77e9b10ba423d97f",
+   "bytes": 4828553
+  },
+  {
+   "file": "tiger2022/tl_2022_17_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 17",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_17_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "ec3011e6ef485151620e3e4d17f052101f819bd5f6c36dd7da855dcb0d5c8348",
+   "bytes": 10005539
+  },
+  {
+   "file": "tiger2022/tl_2022_18_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 18",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_18_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "aad511834d3e0274e89a4b61437e712370770727aa0c80714392e0f8a051689e",
+   "bytes": 6303522
+  },
+  {
+   "file": "tiger2022/tl_2022_19_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 19",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_19_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "697053ec2ad12ab1106b9fc32114139ab66d6b6369321c8d5bbbb8e34cc2fbdb",
+   "bytes": 4108041
+  },
+  {
+   "file": "tiger2022/tl_2022_20_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 20",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_20_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "6d798550862dedd3b2b2b08d077e216b025d7996b8e69833ff3a81dfd79ed0e5",
+   "bytes": 3105802
+  },
+  {
+   "file": "tiger2022/tl_2022_21_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 21",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_21_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "50eb67e71b77daa52b718e69c547148710c400abcdea74191d3c95e2c680737f",
+   "bytes": 13232307
+  },
+  {
+   "file": "tiger2022/tl_2022_22_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 22",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_22_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "d5a779954daed63d601765d0229fcb8c83a62c4150c981537d8294ad6285af66",
+   "bytes": 8346399
+  },
+  {
+   "file": "tiger2022/tl_2022_23_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 23",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_23_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "a42c855399ceeb03c400589cb1c94e5659c4557ceece8d30542fcfb5bc9fd912",
+   "bytes": 3169508
+  },
+  {
+   "file": "tiger2022/tl_2022_24_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 24",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_24_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "414a86fa390e0f1e679087c7b328773b356d5859a902b3e61008d1f5450b2f67",
+   "bytes": 5825242
+  },
+  {
+   "file": "tiger2022/tl_2022_25_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 25",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_25_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "1cf53f68025f1abce7bd2737822bd65f614bab798ba4bc65192afe8dced6eb3a",
+   "bytes": 4521583
+  },
+  {
+   "file": "tiger2022/tl_2022_26_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 26",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_26_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "2fe3c0983c8b1851d1e79894024dc40a50271c0664ca3a73865da4416dfa6876",
+   "bytes": 5561748
+  },
+  {
+   "file": "tiger2022/tl_2022_27_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 27",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_27_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "fed400cc49d9e5a7f2c00274a4c3b536633f78d48d0feba96efac10cf8bc8386",
+   "bytes": 7458427
+  },
+  {
+   "file": "tiger2022/tl_2022_28_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 28",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_28_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "cc0a0c7cfe24bbc661a3f0a315a38b1b8321c2eca262abb3de930f46fc752cfb",
+   "bytes": 9682637
+  },
+  {
+   "file": "tiger2022/tl_2022_29_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 29",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_29_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "d1c8442d52e7145d17fe0fafe3d92c820b4dd2be5750ab25befeb81661ade123",
+   "bytes": 10453350
+  },
+  {
+   "file": "tiger2022/tl_2022_30_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 30",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_30_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "4ef11d18d2ac2846e5e35276e86f7735f021813fd3a6237df21090d8e8503e3d",
+   "bytes": 7026345
+  },
+  {
+   "file": "tiger2022/tl_2022_31_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 31",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_31_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "e6a4e62a0e7d6a3db2bcd2ad14c93d16128431e7f347e39d368e73a3f00fd4aa",
+   "bytes": 2216097
+  },
+  {
+   "file": "tiger2022/tl_2022_32_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 32",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_32_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "4172ebf679d6649a2484d220b21627a9399d6fcc2eb943ed12e26d5b09d9e8f6",
+   "bytes": 3192466
+  },
+  {
+   "file": "tiger2022/tl_2022_33_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 33",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_33_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "ea70df603d75c23fd01ffd15a33c40a0387dce69006f6affdd68c11961955786",
+   "bytes": 1501847
+  },
+  {
+   "file": "tiger2022/tl_2022_34_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 34",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_34_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "bec4d351275e6cc3c7613fd845303a771dd9094ba9e20154394d5ece955d945f",
+   "bytes": 7110984
+  },
+  {
+   "file": "tiger2022/tl_2022_35_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 35",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_35_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "a0fcc010d6f6e57cdcd19ba06abf34f698782c2cc5cc070a6d76a0b6e3a81e7f",
+   "bytes": 4946800
+  },
+  {
+   "file": "tiger2022/tl_2022_36_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 36",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_36_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "bdcf98e684c07df194ed29af7aaa7e183bce47cda65672701714ff3820e1b568",
+   "bytes": 8816194
+  },
+  {
+   "file": "tiger2022/tl_2022_37_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 37",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_37_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "6660e85682a9dfd55c8bed8b4fdaa1dcf663215b2e1cb89a3b718fed6a740c88",
+   "bytes": 19920777
+  },
+  {
+   "file": "tiger2022/tl_2022_38_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 38",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_38_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "c540ac7c4e32d273b74bb57b6133831c9e178c8ee7b68bd776cc981793eac66d",
+   "bytes": 1805547
+  },
+  {
+   "file": "tiger2022/tl_2022_39_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 39",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_39_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "6dfb7f689eb28715c8a18473e0a37e1b7af6d1777746e7fc49c1a66248446a35",
+   "bytes": 9424329
+  },
+  {
+   "file": "tiger2022/tl_2022_40_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 40",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_40_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "a5903355832c2c5c3d41cf550efa031474f54eefbc3ac2c9b3941bce7aea6742",
+   "bytes": 6913694
+  },
+  {
+   "file": "tiger2022/tl_2022_41_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 41",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_41_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "ab3ad492233055a79a85b2159f6151dda5eae2135d3b44fa4e21ac3f6160cfca",
+   "bytes": 10628073
+  },
+  {
+   "file": "tiger2022/tl_2022_42_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 42",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_42_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "1e8946a1396f7ae9040b48efab8d06d77dd192b899531f9c639f526cf6f0e0a7",
+   "bytes": 12880669
+  },
+  {
+   "file": "tiger2022/tl_2022_44_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 44",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_44_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "715920e96b7f4954990a2c03461b6161df857be6c99a2df5692a71223f13e6a6",
+   "bytes": 822855
+  },
+  {
+   "file": "tiger2022/tl_2022_45_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 45",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_45_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "65fb814a85f3ec342915507b53ed3239e483ed5c4503b1ade912558bbbefe169",
+   "bytes": 9801863
+  },
+  {
+   "file": "tiger2022/tl_2022_46_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 46",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_46_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "f4fc07300024383d9919b9874349e6ffe5aa7940553830b376adbd81876709a4",
+   "bytes": 2854489
+  },
+  {
+   "file": "tiger2022/tl_2022_47_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 47",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_47_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "fdc47ca4ddebfb5295aeeba8ac4783fdca6d770785c69bf2cecdb0177c89e0f3",
+   "bytes": 15669486
+  },
+  {
+   "file": "tiger2022/tl_2022_48_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 48",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_48_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "51412c41e194ceec533d2ef7ea79991afbae06fa14d182895bc57206cad9561d",
+   "bytes": 32645247
+  },
+  {
+   "file": "tiger2022/tl_2022_49_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 49",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_49_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "f8407eea5672c25ca59b7d8e1ba57d0cbd284e457fe4f613f5c2e8945178ca7a",
+   "bytes": 5615111
+  },
+  {
+   "file": "tiger2022/tl_2022_50_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 50",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_50_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "0f538dcb1e53e7ed4f9ee352fbaefaa4fd5067d518987e2f07f675dec9859e29",
+   "bytes": 776990
+  },
+  {
+   "file": "tiger2022/tl_2022_51_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 51",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_51_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "431d0c4e06cf917018595f84e833083707c4c239eed6775138a5e791d15ee7c4",
+   "bytes": 16672719
+  },
+  {
+   "file": "tiger2022/tl_2022_53_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 53",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_53_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "1e4e2e302d014aa8e00468555f988c1ac52abe08cd10083c58eb359de5bc0896",
+   "bytes": 9822257
+  },
+  {
+   "file": "tiger2022/tl_2022_54_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 54",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_54_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "d4b22ba489da57b7584365d3f58b4d553fa273541077da09caaff00b61c20575",
+   "bytes": 7982776
+  },
+  {
+   "file": "tiger2022/tl_2022_55_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 55",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_55_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "984f50e43a9d37f4ef521c5e6ab974dc9b460f37e8cd76f6a8e8a21f4ea8945d",
+   "bytes": 7685662
+  },
+  {
+   "file": "tiger2022/tl_2022_56_tract.zip",
+   "name": "TIGER/Line Shapefiles 2022, census tracts, state 56",
+   "publisher": "U.S. Census Bureau",
+   "year": "2022 (2020 tracts)",
+   "url": "https://www2.census.gov/geo/tiger/TIGER2022/TRACT/tl_2022_56_tract.zip",
+   "use": "Tract geometry and the tract universe",
+   "present": true,
+   "sha256": "efb777ae60d29fb7b69e3263a3350c00369e06b341381f25b751ba3681dd0cea",
+   "bytes": 2794705
+  },
+  {
+   "file": "MCC.csv",
+   "name": "Modeled County Customers (MCC)",
+   "publisher": "Oak Ridge National Laboratory (EAGLE-I companion)",
+   "year": "2022",
+   "url": "https://doi.ccs.ornl.gov/dataset/ccec86f0-e144-5de8-aee0-fb26028b26e1",
+   "use": "Customer denominator for Primary OBI",
+   "present": true,
+   "sha256": "d7fbe0d60ea71273f68bd744408059491fbc7f85b6254882d17783d7762bf65e",
+   "bytes": 40584
+  }
+ ],
+ "thresholds": {
+  "tract": 0.75,
+  "county": 0.6,
+  "svi_county": 0.75
+ },
+ "hazards": {
+  "DRGT_RISKS": "Drought",
+  "HWAV_RISKS": "Heat wave",
+  "WFIR_RISKS": "Wildfire",
+  "IFLD_RISKS": "Inland flooding (NRI v1.20 successor to Riverine flooding)",
+  "ERQK_RISKS": "Earthquake",
+  "SWND_RISKS": "Strong wind",
+  "TRND_RISKS": "Tornado"
+ }
+}

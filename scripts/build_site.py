@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """
-Build the SEGDA SMART Grid site from one pipeline output folder.
+Build the GridAI (SEGDA) site from one pipeline output folder.
 
-    python scripts/build_site.py <PIPELINE_OUT> <SITE_DIR>
+    python scripts/build_site.py <PIPELINE_OUT> <SITE_DIR> [NATIONAL_BUILD]
+
+NATIONAL_BUILD (optional) is the folder written by pipeline/segda_national.py plus
+scripts/make_national_topo.sh. Its gate must also be PASS.
 
 Refuses to build if the pipeline's validation gate did not pass, so the site
 can never show numbers that no longer reproduce the paper.
@@ -23,7 +26,38 @@ def num(x, n=4):
     return None if x is None or (isinstance(x, float) and math.isnan(x)) else round(float(x), n)
 
 
-def main(src, dst):
+def national(nb, dst):
+    """Copy the national layer into site/data/national and return the small summary embedded in the page."""
+    nb = Path(nb)
+    R = json.loads((nb / "national_results.json").read_text())
+    if R["run"]["gate"] != "PASS":
+        sys.exit(f"National gate is {R['run']['gate']}; the site is not rebuilt.")
+    out = dst / "data" / "national"
+    out.mkdir(parents=True, exist_ok=True)
+    t = pd.read_csv(nb / "national_tracts.csv", dtype={"GEOID": str, "st": str, "fips": str})
+    # per state: GEOID -> [ejbi, svi, eji, ebm, pop, county fips, masked, svi_hidden]
+    for st, g in t.groupby("st"):
+        d = {r.GEOID: [num(r.ejbi), num(r.svi), num(r.eji), num(r.ebm), None if pd.isna(r.pop) else int(r.pop),
+                       r.fips, int(bool(r.masked)), int(bool(r.svi_hidden))] for r in g.itertuples()}
+        (out / f"v{st}.json").write_text(json.dumps(d, separators=(",", ":"), allow_nan=False))
+    for f in (nb / "topo").glob("*.json"):
+        shutil.copyfile(f, out / f.name)
+    for f in ["national_counties.csv", "national_states.csv", "national_tracts.csv", "national_results.json",
+              "national_audit.csv", "national_sources.csv"]:
+        shutil.copyfile(nb / f, out / f)
+    c = pd.read_csv(nb / "national_counties.csv", dtype={"fips5": str, "STATEFP": str})
+    keep = ["fips5", "STATEFP", "NAME", "pop", "ejbi", "svi_c", "obi", "cs", "tracts", "tracts_valid", "tracts_high",
+            "pop_high", "tract_min", "tract_max", "masked_tracts", "masked_pop", "svi_tracts_high", "svi_hidden_tracts",
+            "svi_hidden_pop", "lisa_ejbi", "lisa_obi"]
+    rows = [[(num(v) if isinstance(v, float) else v) for v in r] for r in c[keep].itertuples(index=False)]
+    s = pd.read_csv(nb / "national_states.csv", dtype={"statefp": str})
+    states = [{k: (num(v) if isinstance(v, float) else v) for k, v in r.items()} for r in s.to_dict("records")]
+    return {"run": R["run"], "nat": R["national"], "rel": R["relations"], "spatial": R["spatial"], "conc": R["concordance"],
+            "audit": R["audit"], "sources": R["sources"], "hazards": R["hazards"], "thr": R["thresholds"],
+            "ccols": keep, "counties": rows, "states": states}
+
+
+def main(src, dst, nb=None):
     src, dst = Path(src), Path(dst)
     R = json.loads((src / "segda_results.json").read_text())
     if R["run"]["gate"] != "PASS":
@@ -45,9 +79,18 @@ def main(src, dst):
     D = {"run": R["run"], "stats": R["stats"], "corr": R["correlations"], "sens": R["sensitivity"],
          "validation": R["validation"], "audit": R["audit"], "sources": R["sources"], "hazards": R["hazards"], "thr": R["thresholds"],
          "counties": counties, "climate": comp_map, "tracts": tr}
+    dst.mkdir(parents=True, exist_ok=True)
+    N = national(nb, dst) if nb else None
     data = json.dumps(D, separators=(",", ":"), allow_nan=False, default=str)
+    ndata = json.dumps(N, separators=(",", ":"), allow_nan=False, default=str)
     html = (ROOT / "site_src" / "template.html").read_text(encoding="utf-8")
-    html = (html.replace("__DATA__", data.replace("</", "<\\/"))
+    import base64
+    imgd = ROOT / "site_src" / "img"
+    uri = lambda f: "data:image/png;base64," + base64.b64encode((imgd / f).read_bytes()).decode()
+    html = html.replace("__LOGO__", uri("fhsc-logo.png")).replace("__ICON__", uri("fhsc-icon.png"))
+    html = html.replace("__HEADSHOT__", "data:image/jpeg;base64," + base64.b64encode((imgd / "vlf-headshot.jpg").read_bytes()).decode())
+    html = (html.replace("__NATIONAL__", ndata.replace("</", "<\\/"))
+                .replace("__DATA__", data.replace("</", "<\\/"))
                 .replace("__TRACTS__", (src / "tracts.topo.json").read_text())
                 .replace("__COUNTIES__", (src / "counties.topo.json").read_text()))
     dst.mkdir(parents=True, exist_ok=True)
@@ -65,6 +108,6 @@ def main(src, dst):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
+    if len(sys.argv) not in (3, 4):
         sys.exit(__doc__)
-    main(sys.argv[1], sys.argv[2])
+    main(*sys.argv[1:])

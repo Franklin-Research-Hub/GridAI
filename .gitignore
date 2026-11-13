@@ -3,3 +3,5 @@ site/
 __pycache__/
 *.pyc
 node_modules/
+national_inputs/
+national_out/

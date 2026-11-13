@@ -1,4 +1,4 @@
-name: Build and publish SEGDA SMART Grid
+name: Build and publish GridAI (SEGDA)
 
 on:
   push:
@@ -34,8 +34,8 @@ jobs:
         run: python pipeline/segda_pipeline.py static_inputs out
       - name: Simplify geometry for the web map
         run: MAPSHAPER=mapshaper bash scripts/make_topo.sh out
-      - name: Build site (refuses unless the gate passed)
-        run: python scripts/build_site.py out site
+      - name: Build site (refuses unless both the California and national gates passed)
+        run: python scripts/build_site.py out site national_build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -1,0 +1,82 @@
+check,result,detail
+Fingerprint: SVI_2022_US.csv,PASS,matches the file downloaded from the publisher
+File present: SVI_2022_US.csv,PASS,found
+Fingerprint: SVI_2022_US_county.csv,PASS,matches the file downloaded from the publisher
+File present: SVI_2022_US_county.csv,PASS,found
+Fingerprint: EJI_2024_United_States_CSV.zip,PASS,matches the file downloaded from the publisher
+File present: EJI_2024_United_States_CSV.zip,PASS,found
+Fingerprint: OEDI6458_Outage_Dataset_R1.zip,PASS,matches the file downloaded from the publisher
+File present: OEDI6458_Outage_Dataset_R1.zip,PASS,found
+Fingerprint: NRI_Table_Counties_v120.zip,PASS,matches the file downloaded from the publisher
+File present: NRI_Table_Counties_v120.zip,PASS,found
+File present: tiger2022/tl_2022_us_county.zip,PASS,found
+File present: tiger2022/tl_2022_us_state.zip,PASS,found
+File present: tiger2022/tl_2022_01_tract.zip,PASS,found
+File present: tiger2022/tl_2022_02_tract.zip,PASS,found
+File present: tiger2022/tl_2022_04_tract.zip,PASS,found
+File present: tiger2022/tl_2022_05_tract.zip,PASS,found
+File present: tiger2022/tl_2022_06_tract.zip,PASS,found
+File present: tiger2022/tl_2022_08_tract.zip,PASS,found
+File present: tiger2022/tl_2022_09_tract.zip,PASS,found
+File present: tiger2022/tl_2022_10_tract.zip,PASS,found
+File present: tiger2022/tl_2022_11_tract.zip,PASS,found
+File present: tiger2022/tl_2022_12_tract.zip,PASS,found
+File present: tiger2022/tl_2022_13_tract.zip,PASS,found
+File present: tiger2022/tl_2022_15_tract.zip,PASS,found
+File present: tiger2022/tl_2022_16_tract.zip,PASS,found
+File present: tiger2022/tl_2022_17_tract.zip,PASS,found
+File present: tiger2022/tl_2022_18_tract.zip,PASS,found
+File present: tiger2022/tl_2022_19_tract.zip,PASS,found
+File present: tiger2022/tl_2022_20_tract.zip,PASS,found
+File present: tiger2022/tl_2022_21_tract.zip,PASS,found
+File present: tiger2022/tl_2022_22_tract.zip,PASS,found
+File present: tiger2022/tl_2022_23_tract.zip,PASS,found
+File present: tiger2022/tl_2022_24_tract.zip,PASS,found
+File present: tiger2022/tl_2022_25_tract.zip,PASS,found
+File present: tiger2022/tl_2022_26_tract.zip,PASS,found
+File present: tiger2022/tl_2022_27_tract.zip,PASS,found
+File present: tiger2022/tl_2022_28_tract.zip,PASS,found
+File present: tiger2022/tl_2022_29_tract.zip,PASS,found
+File present: tiger2022/tl_2022_30_tract.zip,PASS,found
+File present: tiger2022/tl_2022_31_tract.zip,PASS,found
+File present: tiger2022/tl_2022_32_tract.zip,PASS,found
+File present: tiger2022/tl_2022_33_tract.zip,PASS,found
+File present: tiger2022/tl_2022_34_tract.zip,PASS,found
+File present: tiger2022/tl_2022_35_tract.zip,PASS,found
+File present: tiger2022/tl_2022_36_tract.zip,PASS,found
+File present: tiger2022/tl_2022_37_tract.zip,PASS,found
+File present: tiger2022/tl_2022_38_tract.zip,PASS,found
+File present: tiger2022/tl_2022_39_tract.zip,PASS,found
+File present: tiger2022/tl_2022_40_tract.zip,PASS,found
+File present: tiger2022/tl_2022_41_tract.zip,PASS,found
+File present: tiger2022/tl_2022_42_tract.zip,PASS,found
+File present: tiger2022/tl_2022_44_tract.zip,PASS,found
+File present: tiger2022/tl_2022_45_tract.zip,PASS,found
+File present: tiger2022/tl_2022_46_tract.zip,PASS,found
+File present: tiger2022/tl_2022_47_tract.zip,PASS,found
+File present: tiger2022/tl_2022_48_tract.zip,PASS,found
+File present: tiger2022/tl_2022_49_tract.zip,PASS,found
+File present: tiger2022/tl_2022_50_tract.zip,PASS,found
+File present: tiger2022/tl_2022_51_tract.zip,PASS,found
+File present: tiger2022/tl_2022_53_tract.zip,PASS,found
+File present: tiger2022/tl_2022_54_tract.zip,PASS,found
+File present: tiger2022/tl_2022_55_tract.zip,PASS,found
+File present: tiger2022/tl_2022_56_tract.zip,PASS,found
+"Tract universe (TIGER 2022, 50 states + DC)",PASS,"84,095 land tracts (320 water-only tracts excluded)"
+"County universe (TIGER 2022, 50 states + DC)",PASS,"3,144 counties and county equivalents"
+SVI tract file is the national release,PASS,"84,120 tracts, 51 states + DC"
+TIGER tracts found in SVI 2022,PASS,100.00% of TIGER 2022 tracts
+SVI tract ranks in 0-1 or suppressed,PASS,"778 tracts with no rank (CDC code -999), left missing"
+SVI county file covers all counties,PASS,"3,144 counties"
+TIGER tracts found in EJI 2024,PASS,100.00% of TIGER 2022 tracts
+EJI 2024 ranks for Alaska and Hawaii,PASS,"EJI 2024 publishes no ranks for AK and HI (-999); national EJBI is left missing there, SVI views still cover them"
+EJI RPL_EJI in 0-1 or missing,PASS,"1,382 tracts without a rank, left missing"
+EJI RPL_EBM in 0-1 or missing,PASS,"1,369 tracts without a rank, left missing"
+NRI covers all counties,PASS,"3,144 of 3,144 counties; version December 2025"
+NRI hazard scores in 0-100,PASS,"all seven hazard risk scores in range; Drought missing for 88 counties, Heat wave missing for 118 counties, Wildfire missing for 88 counties, Inland flooding missing for 88 counties, Earthquake missing for 88 counties, Strong wind missing for 88 counties, Tornado missing for 88 counties (Climate Stress left missing there)"
+Outage episodes have positive durations and customers,PASS,"1,487,181 episode rows, 2018-2023 files"
+Outage dates parse,PASS,0 rows with unreadable dates
+California Primary OBI: public release vs the paper's file,PASS,"Pearson r = 0.987 across 56 counties, same method, California-only scaling (threshold 0.95)"
+California county EJBI: national version vs the paper's CalEnviroScreen version,PASS,Pearson r = 0.807 across 57 counties (threshold 0.80; different components and tract vintages)
+California Climate Stress: NRI v1.20 national scaling vs the paper,PASS,"Pearson r = 0.997 across 57 counties (threshold 0.80; newer NRI version, national scaling)"
+California variance suppression survives the change of index,PASS,72.27% with the national EJBI vs 67.82% in the paper
