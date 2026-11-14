@@ -106,7 +106,7 @@ def main(src, dst, nb=None):
     import base64
     imgd = ROOT / "site_src" / "img"
     uri = lambda f: "data:image/png;base64," + base64.b64encode((imgd / f).read_bytes()).decode()
-    html = html.replace("__LOGO__", uri("fhsc-logo.png")).replace("__ICON__", uri("fhsc-icon.png"))
+    html = html.replace("__LOGO__", uri("fhsc-logo.png")).replace("__ICON__", uri("gridai-icon-64.png"))
     html = html.replace("__HEADSHOT__", "data:image/jpeg;base64," + base64.b64encode((imgd / "vlf-headshot.jpg").read_bytes()).decode())
     html = (html.replace("__NATIONAL__", ndata.replace("</", "<\\/"))
                 .replace("__DATA__", data.replace("</", "<\\/"))
