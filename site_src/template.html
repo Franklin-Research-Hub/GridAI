@@ -197,6 +197,7 @@ footer{justify-content:center;text-align:center;flex-direction:column;align-item
     <a href="#california" data-go="california">California case study</a>
     <a href="#methods" data-go="methods">Methods &amp; validation</a>
     <a href="#audit" data-go="audit">Data &amp; audit</a>
+    <a href="#licensing" data-go="licensing">Licensing</a>
     <a href="#about" data-go="about">About</a>
   </nav>
 </div></header>
@@ -220,6 +221,7 @@ footer{justify-content:center;text-align:center;flex-direction:column;align-item
 <section class="casec" id="v-clusters"></section>
 <section class="casec" id="v-robust"></section>
 </div>
+<section class="view" id="v-licensing" hidden></section>
 <section class="view" id="v-about" hidden></section>
 <section class="view" id="v-methods" hidden></section>
 <section class="view" id="v-audit" hidden></section>
@@ -854,6 +856,32 @@ const WORK=[
  {type:'Paper', status:'Accepted · camera-ready submitted', title:'BioGrid Sentinel AI: A Geospatial Digital Twin Framework for Nuclear Infrastructure Resilience and Community Health Preparedness', venue:'10th EAI SmartGIFT 2026 · Springer LNICST', date:'12–13 November 2026'},
  {type:'Panel', status:'Panelist', title:'HBCU National Spotlight', venue:'11th Annual Environmental Justice & Health Disparities Symposium (virtual)', date:'10 September 2025'},
 ];
+function renderLicensing(){
+  const el=document.getElementById('v-licensing');
+  el.innerHTML=`
+  <section class="pagehead"><div class="eb">Licensing &amp; terms</div><h1>Use it freely. <span class="h2g">License it for your work.</span></h1></section>
+  <div class="panel"><div class="eb">Free to use</div><h2>Open to <span class="g">everyone</span></h2>
+    <p>You may view every public page and use GridAI™ for personal, educational, research, journalism and public&#8209;health purposes, and quote figures or show screenshots with credit. Cite the run shown in the footer and the original sources on <a href="#audit" data-go="audit">Data &amp; audit</a>.</p></div>
+  <div class="panel"><div class="eb">What needs a license</div><h2>For organizations <span class="g">and products</span></h2>
+    <ul style="padding-left:20px;line-height:1.7;margin:0">
+      <li>Using GridAI™ inside an organization’s operations, products or services</li>
+      <li>Bulk downloads, a data feed or an API</li>
+      <li>Custom views, screening rules or integrations for your area</li>
+      <li>The source code, pipeline and reproducibility package</li></ul></div>
+  <div class="panel"><div class="eb">What a license includes</div><h2>Core plus <span class="g">add&#8209;on modules</span></h2>
+    <p><b>Core</b>, included in every license: the national map, state and census&#8209;tract views, and key findings.</p>
+    <p><b>Add&#8209;on modules:</b> the California case study and methods audit, public&#8209;health layers such as electricity&#8209;dependent residents, and data and API. New features are offered as add&#8209;ons as they launch, with a free preview for current licensees.</p>
+    <p>Licenses cover one state, several states, or the whole country (all 50 states and DC), for government, public health, academic, community and enterprise teams. A reproducibility package (source code, ready&#8209;to&#8209;run environment, validation checks and setup support) can be added at any tier. Pricing is shared on request.</p>
+    <div class="cta"><a class="btn-ink" href="https://franklinhubsmartcenter.com/join?interest=tool-license#interest-form" target="_blank" rel="noopener">Request a license →</a></div></div>
+  <div class="panel"><div class="eb">Terms of use</div><h2>The <span class="g">short version</span></h2>
+    <ul style="padding-left:20px;line-height:1.7;margin:0">
+      <li><b>Not allowed:</b> reselling or republishing GridAI™ or its outputs as your own service, scraping or overloading the site, removing credits or trademarks, or implying endorsement.</li>
+      <li><b>Data sources keep their own terms.</b> U.S. government data is not subject to copyright; some sources, such as DOE/ORNL EAGLE&#8209;I, require specific credit.</li>
+      <li><b>Not emergency advice.</b> GridAI™ describes patterns in published data for research, planning and awareness.</li>
+      <li><b>No warranty.</b> The site is provided as is. To the extent the law allows, no liability is accepted for decisions made using it.</li>
+      <li><b>Ownership.</b> The code, pipeline, design, text, processed data and the name GridAI™ are proprietary. Using the free site gives no rights to them.</li></ul>
+    <p class="note">Full terms of use for GridAI™ and NWGS Grid™: <a href="https://franklinhubsmartcenter.com/licensing" target="_blank" rel="noopener">franklinhubsmartcenter.com/licensing</a>. Tennessee law applies.</p></div>`;
+}
 function renderAbout(){
   const el=document.getElementById('v-about');
   el.innerHTML=`
@@ -937,7 +965,7 @@ function phSources(){
 
 /* ---------------- router ---------------- */
 const CA_PARTS=[['hidden',renderHidden],['outage',renderOutage],['relations',renderRelations],['clusters',renderClusters],['robust',renderRobust]];
-const VIEWS={us:renderUS,about:renderAbout,california:()=>{document.getElementById('ca-findings').innerHTML=caFindings();CA_PARTS.forEach(([,f])=>f())},methods:()=>{renderMethods();document.getElementById('v-methods').insertAdjacentHTML('beforeend',natMethodsPanel()+schedulePanel())},audit:()=>{renderAudit();document.getElementById('v-audit').insertAdjacentHTML('beforeend',natAuditPanel())}};
+const VIEWS={us:renderUS,about:renderAbout,licensing:renderLicensing,california:()=>{document.getElementById('ca-findings').innerHTML=caFindings();CA_PARTS.forEach(([,f])=>f())},methods:()=>{renderMethods();document.getElementById('v-methods').insertAdjacentHTML('beforeend',natMethodsPanel()+schedulePanel())},audit:()=>{renderAudit();document.getElementById('v-audit').insertAdjacentHTML('beforeend',natAuditPanel())}};
 const done={};
 function go(v){let part=null;
   if(CA_PARTS.some(([k])=>k===v)){part=v;v='california'}
@@ -951,7 +979,7 @@ function go(v){let part=null;
 document.addEventListener('click',e=>{const j=e.target.closest('[data-jump]');if(j){e.preventDefault();document.getElementById(j.dataset.jump).scrollIntoView({behavior:'smooth'});try{history.replaceState(null,'','#'+j.dataset.jump.slice(2))}catch(_){};return}
   const a=e.target.closest('[data-go]');if(a){e.preventDefault();go(a.dataset.go)}});
 const setTop=()=>document.documentElement.style.setProperty('--toph',document.querySelector('.top').offsetHeight+'px');setTop();addEventListener('resize',setTop);
-document.getElementById('foot').innerHTML=`<img src="__LOGO__" alt="Franklin HUB SMART Center"><div><b>GridAI™</b> · <a href="https://gridaitm.com/">gridaitm.com</a> · SEGDA · Built from the audited SEGDA reproducibility pipeline · Run ${esc(D.run.run_utc)} · Validation ${esc(D.run.gate)} (${D.run.n_locked-D.run.n_mismatch}/${D.run.n_locked} paper values reproduced; ${D.run.n_audit-D.run.n_audit_fail-D.run.n_audit_warn} data checks passed, ${D.run.n_audit_warn} warning) · <a href="#audit" data-go="audit">Data &amp; audit</a> · Developed and authored by Victoria Love Franklin · © 2026. A Franklin HUB SMART Center research platform.</div>`;
+document.getElementById('foot').innerHTML=`<img src="__LOGO__" alt="Franklin HUB SMART Center"><div><b>GridAI™</b> · <a href="https://gridaitm.com/">gridaitm.com</a> · SEGDA · Built from the audited SEGDA reproducibility pipeline · Run ${esc(D.run.run_utc)} · Validation ${esc(D.run.gate)} (${D.run.n_locked-D.run.n_mismatch}/${D.run.n_locked} paper values reproduced; ${D.run.n_audit-D.run.n_audit_fail-D.run.n_audit_warn} data checks passed, ${D.run.n_audit_warn} warning) · <a href="#audit" data-go="audit">Data &amp; audit</a> · Developed and authored by Victoria Love Franklin · © 2026 Victoria Love Franklin. A Franklin HUB SMART Center research platform, licensed through FRANKLIN HUB SMART Center LLC · <a href="#licensing" data-go="licensing">Licensing &amp; terms</a></div>`;
 go(location.hash.slice(1)||(N?'us':'california'));
 </script>
 </body>
