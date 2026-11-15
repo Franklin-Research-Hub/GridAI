@@ -215,13 +215,16 @@ footer .f1{color:var(--ink);font-size:.86rem}footer .f1 b{font-weight:800}footer
 .nctrack i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
 .nctrack span{position:absolute;left:calc(100% + 6px);top:50%;transform:translateY(-50%);font-size:.76rem;font-weight:700;color:var(--ink);white-space:nowrap}
 .nckey{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:var(--muted);margin:6px 0}.nckey i{display:inline-block;width:12px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.ncpair.sm{margin:6px 0;font-size:.8rem}.ncpair.sm .nclab{line-height:1.25}
 .nc-more{all:unset;cursor:pointer;margin-top:8px;font-size:.84rem;font-weight:600;color:var(--brand)}
 @media(max-width:600px){.ncrow,.ncpair{grid-template-columns:1fr}.ncpair .nclab{grid-row:auto}}
 
 /* National study maps: one horizontal workspace */
 .ws-bar{position:sticky;top:var(--toph,64px);z-index:5;background:#fff;padding:10px 0;border-bottom:1px solid var(--line);margin:0 0 14px}
-.ws{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:22px;align-items:start}
-.ws-r .map{max-height:60vh}
+.ws{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) minmax(0,.95fr);gap:18px;align-items:start}
+.ws-r{border-left:1px solid var(--line);padding-left:16px}
+@media(max-width:1279px){.ws{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.ws-l{grid-column:1/-1}.ws-r{border-left:0;padding-left:0}}
+.ws-m .map{max-height:62vh}
 .ws-detail{max-width:760px;margin-top:10px}
 .ws-detail .chart svg{max-width:520px}
 @media(max-width:900px){.ws{grid-template-columns:1fr}.ws-bar{position:static}}
@@ -230,6 +233,34 @@ footer .f1{color:var(--ink);font-size:.86rem}footer .f1 b{font-weight:800}footer
 .top .brand img.wordmark{height:66px;width:auto;display:block}
 @media(max-width:760px){.top .brand img.wordmark{height:38px}}
 @media(max-width:380px){.top .brand img.wordmark{height:32px}}
+
+/* Less scrolling on the charts page: lists become grids, tables fold away */
+#ph-panel .rows,.kf .rows{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 26px;border-top:0;margin-top:18px}
+.kf .rows{grid-template-columns:repeat(2,minmax(0,1fr))}
+#ph-panel .row,.kf .row{display:block;border-top:1px solid var(--line);padding:14px 0 16px}
+#ph-panel .row h3,.kf .row h3{margin:4px 0 6px;font-size:1.02rem}
+#ph-panel .row p,.kf .row p{font-size:.95rem}
+details.more{margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+details.more summary{cursor:pointer;font-weight:600;color:var(--brand)}
+.emp-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:28px;align-items:start}
+#u-empower td:first-child{white-space:nowrap}
+@media(max-width:1100px){#ph-panel .rows{grid-template-columns:repeat(2,minmax(0,1fr))}.emp-g{grid-template-columns:1fr}}
+@media(max-width:760px){#ph-panel .rows,.kf .rows{grid-template-columns:1fr}}
+
+/* Tables: full grid with vertical rules, shaded sticky header, zebra rows, aligned numbers */
+.view table{border-collapse:separate;border-spacing:0;width:100%;font-size:.86rem;border:1px solid #d9dbe2;border-radius:10px;overflow:hidden;background:#fff}
+.view .tbl{border-radius:10px;margin:8px 0}
+.view .tbl table{border-radius:10px}
+.view th,.view td{padding:8px 11px;border-bottom:1px solid #e3e5ea;border-right:1px solid #e3e5ea;text-align:left;vertical-align:top;line-height:1.45}
+.view th:last-child,.view td:last-child{border-right:0}
+.view tr:last-child>td{border-bottom:0}
+.view th{background:#f1f2f6;color:#1f2430;font-size:.74rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid #cfd2da;position:sticky;top:0;z-index:1;vertical-align:bottom}
+.view tr:nth-child(even)>td{background:#fafbfc}
+.view tr:hover>td{background:#f3f0ff}
+.view th.n,.view td.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.view td.small{font-size:.82rem}
+.band .view table,.band table{background:transparent}
+#u-tab th{cursor:pointer}
 </style>
 </head>
 <body>
@@ -647,7 +678,7 @@ function renderMaps(){
   if(!N){el.innerHTML='<p class="note">The national layer was not included in this build.</p>';return}
   el.innerHTML=`
   <section class="nc-wrap nc-head" style="border-top:0"><div class="eb">National study · all 50 states and DC · 2018–2023</div><h1 style="margin:6px 0 8px">National study <span class="g">maps</span></h1>
-    <p class="note">One workspace: the national county map on the left, the census tracts of the selected state on the right. Below it, every state in a table; click a row to open that state. The charts are on their own page: <a href="#us" data-go="us">National study charts</a>.</p></section>
+    <p class="note">One workspace, read left to right: every county, then the census tracts of the state you pick, then that state in numbers. Click a tract to see its county; below, every state in a table, where clicking a row opens that state. The charts are on their own page: <a href="#us" data-go="us">National study charts</a>.</p></section>
   <div class="panel ws-panel" id="u-map-sec">
     <div class="controls ws-bar">
       <div class="seg" id="u-meas" role="group" aria-label="County measure">${Object.entries(US_MEAS).map(([k,m])=>`<button data-v="${k}">${m.lab}</button>`).join('')}</div>
@@ -656,12 +687,13 @@ function renderMaps(){
       <label class="chk"><input type="checkbox" id="u-hid" checked> Outline hidden tracts</label>
     </div>
     <div class="ws">
-      <div class="ws-l"><div class="eb">Every county</div><div class="map wide" id="u-map"></div><div id="u-leg"></div><p class="note" id="u-cap"></p><p class="note small">Click a county to open its state on the right.</p></div>
-      <div class="ws-r" id="u-state-panel"><div class="eb">Census tracts</div><h3 id="u-st-title" style="margin:2px 0 8px">Inside a state</h3>
-        <div id="u-st-stats" class="kv" style="grid-template-columns:repeat(2,1fr)"></div>
+      <div class="ws-l"><div class="eb">1 · Every county</div><div class="map wide" id="u-map"></div><div id="u-leg"></div><p class="note" id="u-cap"></p><p class="note small">Click a county or a state to open it in the next panes.</p></div>
+      <div class="ws-m" id="u-state-panel"><div class="eb">2 · Census tracts</div><h3 id="u-st-title" style="margin:2px 0 8px">Inside a state</h3>
         <div class="map" id="u-smap"></div><div id="u-sleg"></div><p class="note" id="u-scap"></p></div>
+      <div class="ws-r" id="u-pane"><div class="eb">3 · In numbers</div><h3 id="u-p3-title" style="margin:2px 0 8px"></h3>
+        <div id="u-st-stats" class="kv" style="grid-template-columns:repeat(2,1fr)"></div>
+        <div id="u-detail"></div></div>
     </div>
-    <div id="u-detail" class="ws-detail"></div>
   </div>
   <div class="panel"><h2>State by state</h2>
     <p class="note">Within-state variance suppression compares a state's tracts with its own counties. Click a column to sort, a row to open the state.</p>
@@ -703,9 +735,9 @@ function drawNatCharts(){
   }
   // 2. Hidden residents by state
   const st=N.states.filter(s=>s.masked_pop>0).sort((a,b)=>b.masked_pop-a.masked_pop), mx=st[0]?st[0].masked_pop:1;
-  const drawSt=all=>{ const rows=all?st:st.slice(0,15);
+  const drawSt=all=>{ const rows=all?st:st.slice(0,10);
     document.getElementById('nc-states').innerHTML=rows.map(s=>bar(esc(s.name),s.masked_pop,mx,'var(--hidden)',`${(s.masked_pop/1e6).toFixed(2)}M`)).join('')+
-      (st.length>15?`<button class="nc-more" type="button">${all?'Show top 15':`Show all ${st.length} states`}</button>`:'');
+      (st.length>10?`<button class="nc-more" type="button">${all?'Show top 10':`Show all ${st.length} states`}</button>`:'');
     const b=document.querySelector('#nc-states .nc-more'); if(b) b.onclick=()=>drawSt(!all); };
   drawSt(false);
   document.getElementById('nc-states-dl').innerHTML=csvLink('gridai_hidden_residents_by_state.csv',['State','Residents in hidden high-burden tracts','Hidden high-burden tracts','Counties hiding them'],st.map(s=>[s.name,s.masked_pop,s.masked_tracts,s.masked_counties]));
@@ -748,10 +780,10 @@ function empowerPanel(){
   const S=E.summary, pass=E.audit.filter(a=>a.result==='PASS').length;
   const rows=E.top.map(r=>`<tr><td>${esc(r.county)}</td><td class="n">${int(r.power_dependent_dme)}</td><td class="n">${int(r.medicare_benes)}</td><td class="n">${fmt(r.obi,3)}</td><td class="n">${r.ejbi==null?'—':fmt(r.ejbi,3)}</td><td class="n">${int(r.hidden_tracts)}</td></tr>`).join('');
   return `<div class="panel" id="u-empower"><div class="eb">Health risk · HHS emPOWER</div><h2>Electricity-dependent residents <span class="g">where outages hit hardest</span></h2>
-  <p style="max-width:820px;color:#3d424d"><b>${int(S.dme_obi_high)}</b> Medicare beneficiaries who rely on electricity-dependent medical equipment, such as ventilators, oxygen concentrators and home dialysis, live in the ${int(S.counties_obi_high)} counties in the top quarter of outage burden (OBI \u2265 ${fmt(S.obi_high_threshold,3)}): ${pct(S.dme_obi_high_pct,1)} of the ${(S.dme_with_obi/1e6).toFixed(2)} million in counties with outage data. ${int(S.dme_obi_high_and_hidden)} of them live in high-outage counties that also hide high-burden tracts (${int(S.counties_obi_high_and_hidden)} counties).</p>
-  <p style="max-width:820px;color:#3d424d">Electricity dependence is about as common in high-outage counties (${fmt(S.rate_obi_high,1)} per 1,000 Medicare beneficiaries) as elsewhere (${fmt(S.rate_other,1)}), and it barely tracks outage burden (r = ${fmt(S.r_rate_obi,3)}). Outage maps alone will not find these residents; the two have to be laid over each other, which the map's <b>Electricity-dependent residents</b> option and this table do.</p>
-  <h3>High-outage counties with the most electricity-dependent residents</h3>
-  <div class="tbl"><table><tr><th>County</th><th class="n">Electricity-dependent</th><th class="n">Medicare beneficiaries</th><th class="n">OBI</th><th class="n">County EJBI</th><th class="n">Hidden tracts</th></tr>${rows}</table></div>
+  <div class="emp-g"><div><p style="max-width:820px;color:#3d424d"><b>${int(S.dme_obi_high)}</b> Medicare beneficiaries who rely on electricity-dependent medical equipment, such as ventilators, oxygen concentrators and home dialysis, live in the ${int(S.counties_obi_high)} counties in the top quarter of outage burden (OBI \u2265 ${fmt(S.obi_high_threshold,3)}): ${pct(S.dme_obi_high_pct,1)} of the ${(S.dme_with_obi/1e6).toFixed(2)} million in counties with outage data. ${int(S.dme_obi_high_and_hidden)} of them live in high-outage counties that also hide high-burden tracts (${int(S.counties_obi_high_and_hidden)} counties).</p>
+  <p style="max-width:820px;color:#3d424d">Electricity dependence is about as common in high-outage counties (${fmt(S.rate_obi_high,1)} per 1,000 Medicare beneficiaries) as elsewhere (${fmt(S.rate_other,1)}), and it barely tracks outage burden (r = ${fmt(S.r_rate_obi,3)}). Outage maps alone will not find these residents; the two have to be laid over each other, which the map's <b>Electricity-dependent residents</b> option and this table do.</p></div><div>
+  <h3 style="margin-top:0">High-outage counties with the most electricity-dependent residents</h3>
+  <div class="tbl"><table><tr><th>County</th><th class="n">Electricity-dependent</th><th class="n">Medicare beneficiaries</th><th class="n">OBI</th><th class="n">County EJBI</th><th class="n">Hidden tracts</th></tr>${rows}</table></div></div></div>
   <p class="note small"><b>What this shows and does not.</b> It shows who is most exposed when the power goes out. It does not measure health outcomes: emPOWER counts people with equipment, not illness or deaths during outages. Counts cover Medicare Fee-For-Service and Medicare Advantage only, so people on Medicaid alone or private insurance are not included. HHS shows counts of 1\u201310 as 11 and raises other small-county counts to protect privacy; county totals run ${fmt(S.county_excess_over_state_pct,2)}% above HHS state totals nationally, most in rural states. Connecticut planning regions and two Alaska census areas are not joined because HHS uses older boundaries there. ${pass} of ${E.audit.length} checks passed on this build.</p>
   <p class="small">Source: <a href="https://empowerprogram.hhs.gov/empower-rest.html" target="_blank" rel="noopener">HHS emPOWER public REST Service</a> (ASPR with CMS), county layer, data as of ${esc(E.source.data_last_edited)}, retrieved ${esc(E.source.retrieved)}. <a href="${NDIR}national_empower_counties.csv" download>County join (CSV)</a> \u00b7 <a href="${NDIR}national_empower_audit.csv" download>emPOWER checks (CSV)</a></p></div>`;
 }
@@ -764,10 +796,11 @@ function screenPanel(){
   const pass=S.audit.filter(a=>a.result==='PASS').length;
   return `<div class="panel" id="u-screen"><div class="eb">Screening rules</div><h2>Which rule reaches <span class="g">the hidden residents?</span></h2>
   <p style="max-width:820px;color:#3d424d">The current county rule reaches <b>${pct(cur.share_reached_pct,1)}</b> of the ${(S.totals.high_burden_residents/1e6).toFixed(1)} million people in high-burden tracts. Flagging the same ${int(same.counties_flagged)} counties, chosen by how many high-burden residents they hold rather than by their average, reaches <b>${pct(same.share_reached_pct,1)}</b>. A county rule that counts any high-burden tract reaches everyone, but flags ${int(any.counties_flagged)} counties and ${(any.population_flagged/1e6).toFixed(0)} million people; a tract screen reaches the same residents while flagging only them.</p>
+  <details class="more"><summary>Show the full tables (EJBI and CDC SVI rules)</summary>
   <h3>Environmental Justice Burden Index (high-burden tract: EJBI \u2265 ${S.thresholds.tract})</h3>
   <div class="tbl"><table>${head}${ej.map(row).join('')}</table></div>
   <h3 style="margin-top:22px">CDC Social Vulnerability Index (top-quartile tract: SVI \u2265 ${S.thresholds.tract})</h3>
-  <div class="tbl"><table>${head}${sv.map(row).join('')}</table></div>
+  <div class="tbl"><table>${head}${sv.map(row).join('')}</table></div></details>
   <p class="note small">Every figure is a count from the audited national tables; nothing is estimated. The trade-off is reach against focus: a broader rule finds more high-burden residents but also flags more people who are not in high-burden tracts (last column). ${pass} of ${S.audit.length} checks passed on this build, including an exact match of the current rule to the published hidden population (${int(cur.high_burden_missed)}).</p>
   <p class="small"><a href="${NDIR}national_screening.csv" download>Screening rules (CSV)</a> \u00b7 <a href="${NDIR}national_screening_audit.csv" download>Screening checks (CSV)</a></p></div>`;
 }
@@ -810,9 +843,10 @@ async function drawUSMap(){
 async function drawState(){
   const st=US.state, S0=NS[st], box=document.getElementById('u-smap');
   document.getElementById('u-st-title').textContent='Inside '+S0.name;
+  document.getElementById('u-p3-title').textContent=S0.name+' in numbers';
   document.getElementById('u-st-stats').innerHTML=[
-    ['Variance suppressed',S0.suppressed_pct!=null?pct(S0.suppressed_pct,1):'—'],['High-burden tracts',int(S0.tracts_high)],
-    ['Hidden tracts',int(S0.masked_tracts)],['People in them',int(S0.masked_pop)]].map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join('');
+    ['Hidden residents',int(S0.masked_pop)],['Hidden tracts',int(S0.masked_tracts)],
+    ['High-burden tracts',int(S0.tracts_high)],['Variation lost to county averages',S0.suppressed_pct!=null?pct(S0.suppressed_pct,1):'—']].map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join('');
   box.innerHTML='<p class="note">Loading tracts…</p>';
   let tt,vv,ct;
   try{[tt,vv,ct]=await Promise.all([getJSON(`${NDIR}t${st}.json`),getJSON(`${NDIR}v${st}.json`),getJSON(NDIR+'us_counties.json')])}catch(e){loadFail(box);document.getElementById('u-detail').innerHTML='';return}
@@ -823,7 +857,8 @@ async function drawState(){
   box.innerHTML='';
   const W=600,H=560, proj=(['02','15'].includes(st)?d3.geoAlbersUsa():d3.geoConicEqualArea().parallels([29.5,45.5]).rotate([96,0])).fitExtent([[6,6],[W-6,H-6]],fc), path=d3.geoPath(proj);
   const svg=d3.select(box).append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('role','img').attr('aria-label',`Census tracts of ${S0.name}`), g=svg.append('g');
-  if(!US.county || NC[US.county]?.STATEFP!==st){const cs=Object.values(NC).filter(c=>c.STATEFP===st).sort((a,b)=>(b.masked_pop-a.masked_pop)||((b.pop||0)-(a.pop||0)));US.county=cs.length?cs[0].fips5:null}
+  if(US.county && NC[US.county]?.STATEFP!==st) US.county=null;
+  US._vv=vv;
   g.selectAll('path.f').data(fc.features).join('path').attr('class','f').attr('d',path).attr('fill',d=>burdenColor(val(d.properties.GEOID)))
     .on('mousemove',(e,d)=>{const r=vv[d.properties.GEOID];if(!r)return;const c=NC[r[5]]||{};
       showTip(e,`<b>Tract ${d.properties.GEOID}</b><div>${esc(c.NAME||'')}</div><div>National EJBI ${fmt(r[0])}</div><div>SVI ${fmt(r[1])} · EJI ${fmt(r[2])} · Env. burden ${fmt(r[3])}</div><div>${int(r[4])} residents</div>${hid(d.properties.GEOID)?'<div style="color:#7ff">Hidden by its county average</div>':''}`)})
@@ -837,18 +872,56 @@ async function drawState(){
   drawUSDetail(vv);
 }
 function drawUSDetail(vv){
-  const el=document.getElementById('u-detail'), c=NC[US.county]; if(!c){el.innerHTML='';return}
+  const el=document.getElementById('u-detail'), c=NC[US.county];
+  if(!c||c.STATEFP!==US.state){drawStateSummary(vv);return}
+  const back=`<button class="nc-more" type="button" id="u-back">← Back to ${esc(NS[US.state].name)}</button>`;
   const e=US.smeasure==='ejbi', thr=N.thr.tract, cthr=e?N.thr.county:N.thr.svi_county, cv=e?c.ejbi:c.svi_c;
   const vals=Object.values(vv).filter(r=>r[5]===c.fips5&&(e?r[0]:r[1])!=null).map(r=>({v:e?r[0]:r[1],p:r[4]||0}));
-  if(!vals.length){el.innerHTML=`<h3>${esc(c.NAME)}</h3><p class="note">No ${e?'national EJBI':'SVI'} values for this county's tracts${e&&['02','15'].includes(c.STATEFP)?' (EJI 2024 does not cover this state; switch to CDC SVI)':''}. Outage burden ${fmt(c.obi)}, Climate Stress ${fmt(c.cs)}.</p>`;return}
+  if(!vals.length){el.innerHTML=`${back}<h3>${esc(c.NAME)}</h3><p class="note">No ${e?'national EJBI':'SVI'} values for this county's tracts${e&&['02','15'].includes(c.STATEFP)?' (EJI 2024 does not cover this state; switch to CDC SVI)':''}. Outage burden ${fmt(c.obi)}, Climate Stress ${fmt(c.cs)}.</p>`;return}
   const hi=vals.filter(x=>x.v>=thr), hp=d3.sum(hi,x=>x.p), tp=d3.sum(vals,x=>x.p), hiddenNow=cv!=null&&cv<cthr&&hi.length>0;
-  el.innerHTML=`<h3>${esc(c.NAME)}</h3><p class="note">${e?'National EJBI':'CDC SVI 2022'}: the county figure against the tracts it summarises.</p>
+  el.innerHTML=`${back}<h3>${esc(c.NAME)}</h3><p class="note">${e?'National EJBI':'CDC SVI 2022'}: the county figure against the tracts it summarises.</p>
     <div class="kv"><div><span>County figure</span><b>${fmt(cv)}</b></div><div><span>Tracts</span><b>${vals.length}</b></div>
     <div><span>Tracts ≥ ${thr}</span><b>${hi.length}</b></div><div><span>People in them</span><b>${int(hp)}</b></div>
     <div><span>Outage burden (OBI)</span><b>${fmt(c.obi)}</b></div><div><span>Climate Stress</span><b>${fmt(c.cs)}</b></div></div>
     <div class="chart" id="u-hist"></div>
     ${hiddenNow?`<div class="callout"><b>${hi.length} high tract${hi.length===1?'':'s'} hidden.</b> The county figure (${fmt(cv)}) is below ${cthr}, so a county-level screen would not flag it, yet ${int(hp)} people (${pct(100*hp/(tp||1),0)} of residents) live in tracts at or above ${thr}.</div>`:''}`;
   if(vals.length) hist(document.getElementById('u-hist'),vals,[[cv,css('--ink'),'County '+fmt(cv)],[thr,css('--signal'),'High tract ≥ '+thr,'4 3'],...(cthr!==thr?[[cthr,css('--accent'),'High county ≥ '+cthr,'2 3']]:[])]);
+  const bb=document.getElementById('u-back'); if(bb) bb.onclick=()=>{US.county=null;drawUSDetail(US._vv)};
+}
+/* Screening rules for a set of counties, from the audited county table (EJBI rules). */
+function screenRules(cs){
+  const thr=N.thr.county, hb=d3.sum(cs,c=>c.pop_high||0), out=[];
+  const add=(label,sel)=>{const f=sel, reached=d3.sum(f,c=>c.pop_high||0), popf=d3.sum(f,c=>c.pop||0);
+    out.push({rule:label,counties:f.length,reached_pct:hb?100*reached/hb:null,precision_pct:popf?100*reached/popf:null})};
+  const avg=cs.filter(c=>c.ejbi!=null&&c.ejbi>=thr);
+  add(`County average EJBI ≥ ${thr} (current county rule)`,avg);
+  add(`Same number of counties (${avg.length}), ranked by high-burden residents`,cs.slice().sort((a,b)=>(b.pop_high||0)-(a.pop_high||0)).slice(0,avg.length));
+  add('County with ≥ 25% of residents in high-burden tracts',cs.filter(c=>c.pop&&(c.pop_high||0)/c.pop>=0.25));
+  add('County with ≥ 10% of residents in high-burden tracts',cs.filter(c=>c.pop&&(c.pop_high||0)/c.pop>=0.10));
+  add('County containing any high-burden tract',cs.filter(c=>(c.tracts_high||0)>0));
+  out.push({rule:'Tract screen: flag the high-burden tracts themselves',counties:cs.filter(c=>(c.tracts_high||0)>0).length,reached_pct:hb?100:null,precision_pct:hb?100:null});
+  return {rules:out,high_burden:hb};
+}
+function drawStateSummary(vv){
+  const el=document.getElementById('u-detail'), st=US.state, S0=NS[st], e=US.smeasure==='ejbi';
+  const cs=Object.values(NC).filter(c=>c.STATEFP===st);
+  const vals=Object.values(vv||{}).filter(r=>(e?r[0]:r[1])!=null).map(r=>({v:e?r[0]:r[1],p:r[4]||0}));
+  const SR=screenRules(cs), noE=['02','15'].includes(st);
+  const ob=cs.filter(c=>c.obi!=null&&c.pop), obiW=ob.length?d3.sum(ob,c=>c.obi*c.pop)/d3.sum(ob,c=>c.pop):null;
+  const thrHi=N.empower&&N.empower.summary?N.empower.summary.obi_high_threshold:null, nHi=thrHi==null?null:ob.filter(c=>c.obi>=thrHi).length;
+  const dme=cs.some(c=>c.dme!=null)?d3.sum(cs,c=>c.dme||0):null;
+  const bar=(v,col)=>`<div class="nctrack thin"><i style="width:${v==null?0:Math.min(100,v)}%;background:${col}"></i><span>${v==null?'—':pct(v,1)}</span></div>`;
+  el.innerHTML=`<p class="note" style="margin:10px 0 2px"><b>Tract ${e?'national EJBI':'CDC SVI'}</b> across ${int(vals.length)} tracts, with the tract and county thresholds.</p><div class="chart" id="u-sthist"></div>
+    <p class="note" style="margin:12px 0 4px"><b>Screening rules in ${esc(S0.name)}</b>: residents of high-burden tracts reached, and flagged residents who live in one.</p>
+    ${noE||!SR.high_burden?`<p class="note small">${noE?'EJI 2024 publishes no ranks for this state, so the EJBI rules cannot be applied.':'No residents of high-burden tracts in this state.'}</p>`:
+      `<div class="nckey"><span><i style="background:var(--accent)"></i>Reached</span><span><i style="background:var(--b2)"></i>Flagged who are high-burden</span></div>`+
+      SR.rules.map((r,i)=>`<div class="ncpair sm"><div class="nclab" title="${esc(r.rule)}">${['County average ≥ '+N.thr.county,'Same count, ranked by residents','≥ 25% of residents','≥ 10% of residents','Any high-burden tract','Tract screen'][i]}<div class="small muted">${int(r.counties)} counties</div></div>${bar(r.reached_pct,'var(--accent)')}${bar(r.precision_pct,'var(--b2)')}</div>`).join('')}
+    <p class="note" style="margin:12px 0 4px"><b>Outages and electricity dependence</b></p>
+    <div class="kv" style="grid-template-columns:repeat(2,1fr)"><div><span>Mean county OBI (population-weighted)</span><b>${fmt(obiW,3)}</b></div><div><span>Counties in the national top quarter of OBI</span><b>${nHi==null?'—':int(nHi)+' of '+int(ob.length)}</b></div>
+      <div><span>Electricity-dependent Medicare beneficiaries</span><b>${dme==null?'—':int(dme)}</b></div><div><span>Counties</span><b>${int(cs.length)}</b></div></div>
+    <p class="small" id="u-st-dl"></p>`;
+  if(vals.length) hist(document.getElementById('u-sthist'),vals,[[N.thr.tract,css('--signal'),'High tract ≥ '+N.thr.tract,'4 3'],...(e?[[N.thr.county,css('--accent'),'High county ≥ '+N.thr.county,'2 3']]:[])]);
+  if(!noE&&SR.high_burden) document.getElementById('u-st-dl').innerHTML=csvLink(`gridai_screening_rules_${S0.abbr}.csv`,['Screening rule','Counties flagged','Residents of high-burden tracts reached (%)','Flagged residents who live in a high-burden tract (%)'],SR.rules.map(r=>[r.rule,r.counties,r.reached_pct==null?'':r.reached_pct.toFixed(2),r.precision_pct==null?'':r.precision_pct.toFixed(2)]),`${S0.name} screening rules (CSV)`);
 }
 function hist(box,vals,lines){
   const W=420,Hh=180,m={t:24,r:10,b:28,l:34}, x=d3.scaleLinear().domain([0,1]).range([m.l,W-m.r]);
