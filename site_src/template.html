@@ -204,6 +204,19 @@ footer .f1{color:var(--ink);font-size:.86rem}footer .f1 b{font-weight:800}footer
   nav#nav a:hover{background:var(--soft)}
   nav#nav a[aria-current="true"]{background:var(--soft);color:var(--brand);font-weight:700;border-bottom:0}
 }
+
+.nc-wrap{padding:56px 0 8px;border-top:1px solid var(--line)}.nc-wrap .grid2{margin-top:14px}
+.nc-wrap .panel.nc{border:1px solid var(--line);border-radius:14px;padding:20px;margin:0;background:#fff}
+.nc h3{margin:0 0 4px;font-size:1.05rem}
+.ncrow{display:grid;grid-template-columns:minmax(110px,34%) 1fr;gap:10px;align-items:center;margin:5px 0;font-size:.86rem}
+.ncpair{display:grid;grid-template-columns:minmax(120px,40%) 1fr;grid-template-rows:auto auto;column-gap:10px;row-gap:3px;align-items:center;margin:10px 0;font-size:.86rem}
+.ncpair .nclab{grid-row:1/3}
+.nctrack{position:relative;height:18px;background:var(--soft);border-radius:4px;margin-right:52px}.nctrack.thin{height:12px}
+.nctrack i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.nctrack span{position:absolute;left:calc(100% + 6px);top:50%;transform:translateY(-50%);font-size:.76rem;font-weight:700;color:var(--ink);white-space:nowrap}
+.nckey{display:flex;gap:14px;flex-wrap:wrap;font-size:.78rem;color:var(--muted);margin:6px 0}.nckey i{display:inline-block;width:12px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.nc-more{all:unset;cursor:pointer;margin-top:8px;font-size:.84rem;font-weight:600;color:var(--brand)}
+@media(max-width:600px){.ncrow,.ncpair{grid-template-columns:1fr}.ncpair .nclab{grid-row:auto}}
 </style>
 </head>
 <body>
@@ -618,6 +631,7 @@ function renderUS(){
   <section class="split"><div><div class="eb">Inside GridAI™</div><h2>SEGDA <span class="h2g">framework</span></h2></div>
     <p>The Socio-Environmental Grid Disruption Analysis (SEGDA) examines environmental justice, county-level power-outage burden, and climate stress across California's census tracts and counties. It tests how geographic aggregation changes measured burden and considers implications for equitable resilience and public health preparedness.</p></section>
   ${keyFindings()}
+  ${natCharts()}
   ${phPanel()}
   <div class="panel"><h2>State by state</h2>
     <p class="note">Within-state variance suppression compares a state's tracts with its own counties. Click a column to sort, a row to open the state.</p>
@@ -636,7 +650,74 @@ function renderUS(){
   const sm=el.querySelector('#u-sm'); setSeg(sm,US.smeasure); sm.onclick=e=>{const t=e.target.closest('button');if(!t)return;US.smeasure=t.dataset.v;setSeg(sm,US.smeasure);drawState()};
   el.querySelector('#u-hid').onchange=e=>{US.showHidden=e.target.checked;drawState()};
   const ss=el.querySelector('#u-st'); ss.value=US.state; ss.onchange=()=>{US.state=ss.value;US.county=null;drawState()};
-  drawUSMap(); drawState(); drawStateTable();
+  drawUSMap(); drawState(); drawStateTable(); drawNatCharts();
+}
+/* National results in four charts. Every value is read from the audited national
+   tables already embedded in the page (N.screen, N.states, NC); nothing is typed in. */
+const csvCell=v=>v==null?'':/[",\n]/.test(String(v))?`"${String(v).replace(/"/g,'""')}"`:String(v);
+const csvLink=(name,head,rows,label='Chart data (CSV)')=>{const t=[head,...rows].map(r=>r.map(csvCell).join(',')).join('\n');
+  return `<a href="data:text/csv;charset=utf-8,${encodeURIComponent(t)}" download="${name}">${label}</a>`};
+function natCharts(){
+  return `<section class="nc-wrap"><div class="eb">The national results</div><h2>Four charts <span class="g">from the audited tables</span></h2>
+  <div class="grid2">
+    <div class="panel nc"><h3>Which screening rule reaches the hidden residents?</h3><p class="note">Share of the residents of high-burden tracts each EJBI rule reaches, and the share of everyone it flags who actually live in a high-burden tract.</p><div id="nc-rules"></div><p class="small" id="nc-rules-dl"></p></div>
+    <div class="panel nc"><h3>Hidden residents by state</h3><p class="note">People in high-burden tracts (EJBI ≥ ${N.thr.tract}) inside counties whose average is below ${N.thr.county}.</p><div id="nc-states"></div><p class="small" id="nc-states-dl"></p></div>
+    <div class="panel nc"><h3>Where high-burden residents live, by county average</h3><p class="note">Residents of high-burden tracts grouped by their county's population-weighted EJBI. Bars left of the line are in counties a county-average screen would not flag.</p><div class="chart" id="nc-band"></div><p class="small" id="nc-band-dl"></p></div>
+    <div class="panel nc"><h3>Does outage burden rise with burden?</h3><p class="note">Mean Primary OBI by county EJBI quintile, with 95% confidence intervals. The dashed line is the mean of all counties.</p><div class="chart" id="nc-quint"></div><p class="small" id="nc-quint-dl"></p></div>
+  </div></section>`;
+}
+function drawNatCharts(){
+  const bar=(lab,v,max,col,txt,sub='')=>`<div class="ncrow"><div class="nclab">${lab}${sub}</div><div class="nctrack"><i style="width:${Math.max(0,100*v/max)}%;background:${col}"></i><span>${txt}</span></div></div>`;
+  // 1. Screening rules
+  const S=N.screen;
+  if(S){ const R=S.rules.filter(r=>r.index==='EJBI');
+    document.getElementById('nc-rules').innerHTML=`<div class="nckey"><span><i style="background:var(--accent)"></i>Residents reached</span><span><i style="background:var(--b2)"></i>Flagged who are high-burden</span></div>`+
+      R.map(r=>`<div class="ncpair"><div class="nclab">${esc(r.rule)}<div class="small muted">${r.key==='tract'&&r.tracts_flagged?`${int(r.tracts_flagged)} tracts flagged`:`${int(r.counties_flagged)} counties flagged`}</div></div>
+        <div class="nctrack"><i style="width:${r.share_reached_pct}%;background:var(--accent)"></i><span>${pct(r.share_reached_pct,1)}</span></div>
+        <div class="nctrack thin"><i style="width:${r.share_of_flagged_pop_high_burden_pct||0}%;background:var(--b2)"></i><span>${r.share_of_flagged_pop_high_burden_pct==null?'—':pct(r.share_of_flagged_pop_high_burden_pct,1)}</span></div></div>`).join('');
+    document.getElementById('nc-rules-dl').innerHTML=csvLink('gridai_screening_rules_chart.csv',['rule','counties_flagged','tracts_flagged','share_reached_pct','share_of_flagged_pop_high_burden_pct'],R.map(r=>[r.rule,r.counties_flagged,r.tracts_flagged||'',r.share_reached_pct,r.share_of_flagged_pop_high_burden_pct]));
+  }
+  // 2. Hidden residents by state
+  const st=N.states.filter(s=>s.masked_pop>0).sort((a,b)=>b.masked_pop-a.masked_pop), mx=st[0]?st[0].masked_pop:1;
+  const drawSt=all=>{ const rows=all?st:st.slice(0,15);
+    document.getElementById('nc-states').innerHTML=rows.map(s=>bar(esc(s.name),s.masked_pop,mx,'var(--hidden)',`${(s.masked_pop/1e6).toFixed(2)}M`)).join('')+
+      (st.length>15?`<button class="nc-more" type="button">${all?'Show top 15':`Show all ${st.length} states`}</button>`:'');
+    const b=document.querySelector('#nc-states .nc-more'); if(b) b.onclick=()=>drawSt(!all); };
+  drawSt(false);
+  document.getElementById('nc-states-dl').innerHTML=csvLink('gridai_hidden_residents_by_state.csv',['state','hidden_residents','hidden_tracts','counties_hiding_them'],st.map(s=>[s.name,s.masked_pop,s.masked_tracts,s.masked_counties]));
+  // 3. Residents of high-burden tracts by county EJBI band
+  const cs=Object.values(NC), W=440, H=230, m={t:16,r:10,b:40,l:46}, step=0.05;
+  const bands=d3.range(0,1,step).map(lo=>({lo,hi:lo+step,v:0}));
+  cs.forEach(c=>{ if(c.ejbi==null||!c.pop_high) return; const k=Math.min(bands.length-1,Math.floor(c.ejbi/step+1e-9)); bands[k].v+=c.pop_high; });
+  const used=bands.filter(b=>b.v>0), lo0=used.length?used[0].lo:0, hi0=used.length?used[used.length-1].hi:1;
+  const x=d3.scaleLinear().domain([lo0,hi0]).range([m.l,W-m.r]), y=d3.scaleLinear().domain([0,d3.max(bands,b=>b.v)||1]).nice().range([H-m.b,m.t]);
+  const sv=d3.select('#nc-band').append('svg').attr('viewBox',`0 0 ${W} ${H}`).attr('role','img').attr('aria-label','Residents of high-burden tracts by county EJBI');
+  sv.selectAll('rect').data(used).join('rect').attr('x',b=>x(b.lo)+1).attr('width',b=>Math.max(0,x(b.hi)-x(b.lo)-2)).attr('y',b=>y(b.v)).attr('height',b=>y(0)-y(b.v))
+    .attr('fill',b=>b.lo+1e-9<N.thr.county?css('--hidden'):css('--b4')).append('title').text(b=>`County EJBI ${b.lo.toFixed(2)}–${b.hi.toFixed(2)}: ${int(b.v)} residents`);
+  sv.append('g').attr('class','axis').attr('transform',`translate(0,${H-m.b})`).call(d3.axisBottom(x).ticks(6));
+  sv.append('g').attr('class','axis').attr('transform',`translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(v=>v===0?'0':(v/1e6)+'M'));
+  sv.append('line').attr('x1',x(N.thr.county)).attr('x2',x(N.thr.county)).attr('y1',m.t).attr('y2',H-m.b).attr('stroke',css('--ink')).attr('stroke-dasharray','4 3');
+  sv.append('text').attr('x',x(N.thr.county)+4).attr('y',m.t+10).attr('font-size',11).attr('fill',css('--ink')).text(`County threshold ${N.thr.county}`);
+  sv.append('text').attr('x',(m.l+W-m.r)/2).attr('y',H-6).attr('text-anchor','middle').attr('font-size',11).attr('fill',css('--muted')).text('County population-weighted EJBI');
+  const below=d3.sum(used.filter(b=>b.lo+1e-9<N.thr.county),b=>b.v), tot=d3.sum(used,b=>b.v);
+  d3.select('#nc-band').append('p').attr('class','note small').html(`<b>${(below/1e6).toFixed(1)} million</b> of ${(tot/1e6).toFixed(1)} million residents of high-burden tracts (${pct(100*below/tot,1)}) live in counties below the threshold.`);
+  document.getElementById('nc-band-dl').innerHTML=csvLink('gridai_high_burden_residents_by_county_ejbi.csv',['county_ejbi_from','county_ejbi_to','residents_in_high_burden_tracts','below_county_threshold'],used.map(b=>[b.lo.toFixed(2),b.hi.toFixed(2),b.v,b.lo+1e-9<N.thr.county]));
+  // 4. Mean OBI by EJBI quintile (same grouping as pandas qcut: right-closed bins on the 20/40/60/80th percentiles)
+  const both=cs.filter(c=>c.ejbi!=null&&c.obi!=null), srt=both.map(c=>c.ejbi).sort(d3.ascending);
+  const edges=[.2,.4,.6,.8].map(p=>d3.quantile(srt,p));
+  const Q=[0,1,2,3,4].map(i=>({q:i+1,v:[]})); both.forEach(c=>Q[edges.filter(e=>c.ejbi>e).length].v.push(c.obi));
+  Q.forEach(g=>{g.n=g.v.length;g.mean=d3.mean(g.v);const sd=d3.deviation(g.v);g.lo=g.mean-1.96*sd/Math.sqrt(g.n);g.hi=g.mean+1.96*sd/Math.sqrt(g.n)});
+  const all=d3.mean(both,c=>c.obi), W2=440,H2=230,m2={t:16,r:10,b:46,l:46};
+  const x2=d3.scaleBand().domain(Q.map(g=>g.q)).range([m2.l,W2-m2.r]).padding(.35), y2=d3.scaleLinear().domain([0,Math.max(.5,d3.max(Q,g=>g.hi))]).nice().range([H2-m2.b,m2.t]);
+  const s2=d3.select('#nc-quint').append('svg').attr('viewBox',`0 0 ${W2} ${H2}`).attr('role','img').attr('aria-label','Mean outage burden by EJBI quintile');
+  s2.selectAll('rect').data(Q).join('rect').attr('x',g=>x2(g.q)).attr('width',x2.bandwidth()).attr('y',g=>y2(g.mean)).attr('height',g=>y2(0)-y2(g.mean)).attr('fill',(g,i)=>css(RAMP[i])).attr('stroke',css('--b2')).attr('stroke-width',.6).append('title').text(g=>`Quintile ${g.q}: mean OBI ${fmt(g.mean,3)} (${int(g.n)} counties)`);
+  s2.selectAll('line.ci').data(Q).join('line').attr('class','ci').attr('x1',g=>x2(g.q)+x2.bandwidth()/2).attr('x2',g=>x2(g.q)+x2.bandwidth()/2).attr('y1',g=>y2(g.lo)).attr('y2',g=>y2(g.hi)).attr('stroke',css('--ink')).attr('stroke-width',1.5);
+  s2.selectAll('text.v').data(Q).join('text').attr('class','v').attr('x',g=>x2(g.q)+x2.bandwidth()/2).attr('y',g=>y2(g.hi)-5).attr('text-anchor','middle').attr('font-size',11).attr('fill',css('--ink')).text(g=>fmt(g.mean,3));
+  s2.append('line').attr('x1',m2.l).attr('x2',W2-m2.r).attr('y1',y2(all)).attr('y2',y2(all)).attr('stroke',css('--muted')).attr('stroke-dasharray','5 4');
+  s2.append('g').attr('class','axis').attr('transform',`translate(0,${H2-m2.b})`).call(d3.axisBottom(x2).tickFormat(q=>q===1?'Q1 lowest':q===5?'Q5 highest':'Q'+q));
+  s2.append('g').attr('class','axis').attr('transform',`translate(${m2.l},0)`).call(d3.axisLeft(y2).ticks(5));
+  s2.append('text').attr('x',(m2.l+W2-m2.r)/2).attr('y',H2-6).attr('text-anchor','middle').attr('font-size',11).attr('fill',css('--muted')).text(`County EJBI quintile (${int(both.length)} counties with both measures)`);
+  document.getElementById('nc-quint-dl').innerHTML=csvLink('gridai_obi_by_ejbi_quintile.csv',['quintile','counties','mean_obi','ci95_low','ci95_high'],Q.map(g=>[g.q,g.n,g.mean.toFixed(4),g.lo.toFixed(4),g.hi.toFixed(4)]));
 }
 function empowerPanel(){
   const E=N.empower; if(!E) return '';
