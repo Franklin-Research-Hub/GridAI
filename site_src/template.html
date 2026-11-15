@@ -296,6 +296,17 @@ details.more summary{cursor:pointer;font-weight:600;color:var(--brand)}
 .sf-sum{margin:2px 0 6px;font-size:.95rem;line-height:1.55;color:#2e323b}
 .sf-list{margin:4px 0 8px;padding-left:20px;font-size:.9rem;line-height:1.5;color:#2e323b}
 .sf-list li{margin:0 0 6px}
+
+/* State detail: two-column summary/findings, no orphaned words */
+.sf{margin-top:18px;border-top:1px solid var(--line);padding-top:6px}
+.sf-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:0}
+.sf-g>div:first-child{padding-right:22px}
+.sf-r{border-left:1px solid var(--line);padding-left:22px}
+.sf p,.sf li,.wbt td,.ws-below .note,.ms span,.ms small{text-wrap:pretty}
+.p3h,.wbt th{text-wrap:balance}
+.view .wbt th{white-space:nowrap}
+.view .wbt td:first-child{line-height:1.35}
+@media(max-width:900px){.sf-g{grid-template-columns:1fr}.sf-g>div:first-child{padding-right:0}.sf-r{border-left:0;padding-left:0;border-top:1px solid var(--line);margin-top:10px}}
 </style>
 </head>
 <body>
@@ -961,10 +972,12 @@ function stateFindings(S0,cs,SR,o){
   if(o.obiW!=null) F.push(`<b>${int(o.nHi)}</b> of ${int(o.ob.length)} counties are in the national top quarter of outage burden; the population-weighted mean is ${fmt(o.obiW,3)} (national county mean ${fmt(n.obi_mean,3)}).`);
   if(dmeAll) F.push(`<b>${int(dmeAll)}</b> Medicare beneficiaries rely on electricity-dependent medical equipment${dmeHi!=null?`, ${int(dmeHi)} of them in high-outage counties`:''}.`);
   const sum=o.noE?`EJI 2024 publishes no ranks for ${esc(S0.name)}, so the national burden index and its screening rules are not computed here; the CDC SVI views and outage measures still apply.`:
-    hb?`<b>${int(S0.masked_pop)}</b> people in ${esc(S0.name)} live in high-burden tracts that county averages hide${share!=null?`, <b>${pct(share,1)}</b> of ${esc(S0.name)}'s ${int(hb)} residents of high-burden tracts`:''}, across ${int(S0.masked_tracts)} tracts in ${int(S0.masked_counties)} counties. ${esc(S0.name)} ranks <b>${rank}</b> of ${N.states.length} jurisdictions by hidden residents.`:
+    hb?`<b>${int(S0.masked_pop)}</b> people in ${esc(S0.name)} live in high-burden tracts that county averages hide${share!=null?`, <b>${pct(share,1)}</b> of ${esc(S0.name)}'s ${int(hb)} residents of high-burden tracts`:''}, across ${int(S0.masked_tracts)} tracts in ${int(S0.masked_counties)} counties. ${esc(S0.name)} ranks <b>${rank}${[,'st','nd','rd'][rank%100>10&&rank%100<14?0:rank%10]||'th'}</b> of ${N.states.length} jurisdictions by hidden residents.`:
     `${esc(S0.name)} has no tracts at or above the high-burden threshold.`;
-  return `<div class="sf"><h4 class="p3h">Summary</h4><p class="sf-sum">${sum}</p>${F.length?`<h4 class="p3h">Key findings</h4><ol class="sf-list">${F.map(f=>`<li>${f}</li>`).join('')}</ol>`:''}
-    <p class="note small">Computed from the audited county table for this build; the screening rules and these sentences are recalculated for each state. Ecological, county-level comparisons, not causal effects.</p></div>`;
+  const nb=t=>t.replace(/ ([^ <>]+)$/,'\u00a0$1').replace(/ ([^ <>]+<\/b>\.?)$/,'\u00a0$1');
+  return `<div class="sf"><div class="sf-g"><div><h4 class="p3h">Summary</h4><p class="sf-sum">${nb(sum)}</p>
+    <p class="note small">Recalculated for each state from the audited county table. County-level comparisons, not causal\u00a0effects.</p></div>
+    ${F.length?`<div class="sf-r"><h4 class="p3h">Key findings</h4><ol class="sf-list">${F.map(f=>`<li>${nb(f)}</li>`).join('')}</ol></div>`:''}</div></div>`;
 }
 function drawStateBelow(){
   const el=document.getElementById('u-below'); if(!el) return;
@@ -979,15 +992,15 @@ function drawStateBelow(){
   <div class="wb-g">
     <div><h4 class="p3h" style="margin-top:4px">Screening rules in ${esc(S0.name)}</h4>
     ${noE||!SR.high_burden?`<p class="note small">${noE?'EJI 2024 publishes no ranks for this state, so the EJBI rules cannot be applied.':'No residents of high-burden tracts in this state.'}</p>`:
-      `<table class="wbt"><colgroup><col style="width:46%"><col style="width:12%"><col style="width:21%"><col style="width:21%"></colgroup><tr><th>Rule</th><th class="n">Counties flagged</th><th>Residents reached</th><th>Hit rate</th></tr>`+
-      SR.rules.map(r=>`<tr><td>${esc(r.rule)}</td><td class="n">${int(r.counties)}</td>${cell(r.reached_pct,'var(--accent)')}${cell(r.precision_pct,'var(--b2)')}</tr>`).join('')+`</table>
-      <p class="note small" style="margin:6px 0 0"><b>Residents reached:</b> share of ${esc(S0.name)}'s ${int(SR.high_burden)} residents of high-burden tracts who live in a flagged county. <b>Hit rate:</b> share of everyone flagged who lives in a high-burden tract.</p>`}
-    ${stateFindings(S0,cs,SR,{ob,obiW,nHi,thrHi,noE})}</div>
+      `<table class="wbt"><colgroup><col style="width:44%"><col style="width:12%"><col style="width:22%"><col style="width:22%"></colgroup><tr><th>Screening rule</th><th class="n" title="Counties flagged">Counties</th><th title="Residents of high-burden tracts reached">Reached</th><th title="Flagged residents who live in a high-burden tract">Hit rate</th></tr>`+
+      SR.rules.map((r,i)=>`<tr><td title="${esc(r.rule)}">${['County average ≥ '+N.thr.county+' (current rule)','Same '+int(SR.rules[0].counties)+' counties, ranked by residents','≥ 25% of residents in high-burden tracts','≥ 10% of residents in high-burden tracts','Any high-burden tract in the county','Tract screen (flag the tracts)'][i]}</td><td class="n">${int(r.counties)}</td>${cell(r.reached_pct,'var(--accent)')}${cell(r.precision_pct,'var(--b2)')}</tr>`).join('')+`</table>
+      <p class="note small" style="margin:6px 0 0"><b>Residents reached:</b> share of ${esc(S0.name)}'s ${int(SR.high_burden)} residents of high-burden tracts who live in a flagged county. <b>Hit rate:</b> share of everyone flagged who lives in a high-burden tract.</p>`}</div>
     <div class="wb-r"><h4 class="p3h" style="margin-top:4px">Outages and electricity dependence</h4>
       <div class="ms-g">${stat('Mean county outage burden',fmt(obiW,3),'OBI, population-weighted')}${stat('High-outage counties',nHi==null?'—':`${int(nHi)} <em>of ${int(ob.length)}</em>`,'in the national top quarter')}
       ${stat('Electricity-dependent residents',dme==null?'—':int(dme),'Medicare, HHS emPOWER')}${stat('Counties',int(cs.length))}</div>
       <p class="small" id="u-st-dl" style="margin-top:10px"></p></div>
-  </div>`;
+  </div>
+  ${stateFindings(S0,cs,SR,{ob,obiW,nHi,thrHi,noE})}`;
   if(!noE&&SR.high_burden) document.getElementById('u-st-dl').innerHTML=csvLink(`gridai_screening_rules_${S0.abbr}.csv`,['Screening rule','Counties flagged','Residents of high-burden tracts reached (%)','Flagged residents who live in a high-burden tract (%)'],SR.rules.map(r=>[r.rule,r.counties,r.reached_pct==null?'':r.reached_pct.toFixed(2),r.precision_pct==null?'':r.precision_pct.toFixed(2)]),`${S0.name} screening rules (CSV)`);
 }
 function hist(box,vals,lines){
