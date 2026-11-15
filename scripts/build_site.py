@@ -132,6 +132,12 @@ def main(src, dst, nb=None):
     img = ROOT / "site_src" / "img"
     if img.exists():
         shutil.copytree(img, dst / "img", dirs_exist_ok=True)
+    # Every downloadable CSV starts with a UTF-8 byte-order mark so Excel reads
+    # characters such as ≥, – and accented county names correctly.
+    for f in dst.rglob("*.csv"):
+        raw = f.read_bytes()
+        if not raw.startswith(b"\xef\xbb\xbf"):
+            f.write_bytes(b"\xef\xbb\xbf" + raw)
     print(f"Built {dst/'index.html'} ({(dst/'index.html').stat().st_size/1e6:.2f} MB), gate {R['run']['gate']}")
 
 

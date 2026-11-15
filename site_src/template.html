@@ -680,7 +680,7 @@ function renderMaps(){
    tables already embedded in the page (N.screen, N.states, NC); nothing is typed in. */
 const csvCell=v=>v==null?'':/[",\n]/.test(String(v))?`"${String(v).replace(/"/g,'""')}"`:String(v);
 const csvLink=(name,head,rows,label='Chart data (CSV)')=>{const t=[head,...rows].map(r=>r.map(csvCell).join(',')).join('\n');
-  return `<a href="data:text/csv;charset=utf-8,${encodeURIComponent(t)}" download="${name}">${label}</a>`};
+  return `<a href="data:text/csv;charset=utf-8,${encodeURIComponent('\uFEFF'+t)}" download="${name}">${label}</a>`};
 function natCharts(){
   return `<section class="nc-wrap" id="u-charts"><div class="eb">National study</div><h2>National study <span class="g">charts</span></h2><p class="note">Four charts from the audited national tables. The maps are on their own page: <a href="#maps" data-go="maps">National study maps</a>.</p>
   <div class="grid2">
@@ -699,7 +699,7 @@ function drawNatCharts(){
       R.map(r=>`<div class="ncpair"><div class="nclab">${esc(r.rule)}<div class="small muted">${r.key==='tract'&&r.tracts_flagged?`${int(r.tracts_flagged)} tracts flagged`:`${int(r.counties_flagged)} counties flagged`}</div></div>
         <div class="nctrack"><i style="width:${r.share_reached_pct}%;background:var(--accent)"></i><span>${pct(r.share_reached_pct,1)}</span></div>
         <div class="nctrack thin"><i style="width:${r.share_of_flagged_pop_high_burden_pct||0}%;background:var(--b2)"></i><span>${r.share_of_flagged_pop_high_burden_pct==null?'—':pct(r.share_of_flagged_pop_high_burden_pct,1)}</span></div></div>`).join('');
-    document.getElementById('nc-rules-dl').innerHTML=csvLink('gridai_screening_rules_chart.csv',['rule','counties_flagged','tracts_flagged','share_reached_pct','share_of_flagged_pop_high_burden_pct'],R.map(r=>[r.rule,r.counties_flagged,r.tracts_flagged||'',r.share_reached_pct,r.share_of_flagged_pop_high_burden_pct]));
+    document.getElementById('nc-rules-dl').innerHTML=csvLink('gridai_screening_rules_chart.csv',['Screening rule','Counties flagged','Tracts flagged (tract screen only)','Residents of high-burden tracts reached (%)','Flagged residents who live in a high-burden tract (%)'],R.map(r=>[r.rule,r.counties_flagged,r.tracts_flagged||'',r.share_reached_pct,r.share_of_flagged_pop_high_burden_pct]));
   }
   // 2. Hidden residents by state
   const st=N.states.filter(s=>s.masked_pop>0).sort((a,b)=>b.masked_pop-a.masked_pop), mx=st[0]?st[0].masked_pop:1;
@@ -708,7 +708,7 @@ function drawNatCharts(){
       (st.length>15?`<button class="nc-more" type="button">${all?'Show top 15':`Show all ${st.length} states`}</button>`:'');
     const b=document.querySelector('#nc-states .nc-more'); if(b) b.onclick=()=>drawSt(!all); };
   drawSt(false);
-  document.getElementById('nc-states-dl').innerHTML=csvLink('gridai_hidden_residents_by_state.csv',['state','hidden_residents','hidden_tracts','counties_hiding_them'],st.map(s=>[s.name,s.masked_pop,s.masked_tracts,s.masked_counties]));
+  document.getElementById('nc-states-dl').innerHTML=csvLink('gridai_hidden_residents_by_state.csv',['State','Residents in hidden high-burden tracts','Hidden high-burden tracts','Counties hiding them'],st.map(s=>[s.name,s.masked_pop,s.masked_tracts,s.masked_counties]));
   // 3. Residents of high-burden tracts by county EJBI band
   const cs=Object.values(NC), W=440, H=230, m={t:16,r:10,b:40,l:46}, step=0.05;
   const bands=d3.range(0,1,step).map(lo=>({lo,hi:lo+step,v:0}));
@@ -725,7 +725,7 @@ function drawNatCharts(){
   sv.append('text').attr('x',(m.l+W-m.r)/2).attr('y',H-6).attr('text-anchor','middle').attr('font-size',11).attr('fill',css('--muted')).text('County population-weighted EJBI');
   const below=d3.sum(used.filter(b=>b.lo+1e-9<N.thr.county),b=>b.v), tot=d3.sum(used,b=>b.v);
   d3.select('#nc-band').append('p').attr('class','note small').html(`<b>${(below/1e6).toFixed(1)} million</b> of ${(tot/1e6).toFixed(1)} million residents of high-burden tracts (${pct(100*below/tot,1)}) live in counties below the threshold.`);
-  document.getElementById('nc-band-dl').innerHTML=csvLink('gridai_high_burden_residents_by_county_ejbi.csv',['county_ejbi_from','county_ejbi_to','residents_in_high_burden_tracts','below_county_threshold'],used.map(b=>[b.lo.toFixed(2),b.hi.toFixed(2),b.v,b.lo+1e-9<N.thr.county]));
+  document.getElementById('nc-band-dl').innerHTML=csvLink('gridai_high_burden_residents_by_county_ejbi.csv',['County EJBI from','County EJBI to','Residents of high-burden tracts','Below county threshold (0.60)'],used.map(b=>[b.lo.toFixed(2),b.hi.toFixed(2),b.v,b.lo+1e-9<N.thr.county?'Yes':'No']));
   // 4. Mean OBI by EJBI quintile (same grouping as pandas qcut: right-closed bins on the 20/40/60/80th percentiles)
   const both=cs.filter(c=>c.ejbi!=null&&c.obi!=null), srt=both.map(c=>c.ejbi).sort(d3.ascending);
   const edges=[.2,.4,.6,.8].map(p=>d3.quantile(srt,p));
@@ -741,7 +741,7 @@ function drawNatCharts(){
   s2.append('g').attr('class','axis').attr('transform',`translate(0,${H2-m2.b})`).call(d3.axisBottom(x2).tickFormat(q=>q===1?'Q1 lowest':q===5?'Q5 highest':'Q'+q));
   s2.append('g').attr('class','axis').attr('transform',`translate(${m2.l},0)`).call(d3.axisLeft(y2).ticks(5));
   s2.append('text').attr('x',(m2.l+W2-m2.r)/2).attr('y',H2-6).attr('text-anchor','middle').attr('font-size',11).attr('fill',css('--muted')).text(`County EJBI quintile (${int(both.length)} counties with both measures)`);
-  document.getElementById('nc-quint-dl').innerHTML=csvLink('gridai_obi_by_ejbi_quintile.csv',['quintile','counties','mean_obi','ci95_low','ci95_high'],Q.map(g=>[g.q,g.n,g.mean.toFixed(4),g.lo.toFixed(4),g.hi.toFixed(4)]));
+  document.getElementById('nc-quint-dl').innerHTML=csvLink('gridai_obi_by_ejbi_quintile.csv',['County EJBI quintile','Counties','Mean Primary OBI','95% CI low','95% CI high'],Q.map(g=>[g.q,g.n,g.mean.toFixed(4),g.lo.toFixed(4),g.hi.toFixed(4)]));
 }
 function empowerPanel(){
   const E=N.empower; if(!E) return '';
