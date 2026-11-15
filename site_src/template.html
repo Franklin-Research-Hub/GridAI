@@ -607,7 +607,7 @@ function renderUS(){
     <div class="eb"><span class="dot"></span>National study · all 50 states and DC · 2018–2023</div>
     <h1>County averages hide<br><span class="glow">${(n.masked_pop/1e6).toFixed(1)} million people.</span></h1>
     <p class="lead">The California case study showed county averages hiding high-burden neighborhoods. This national study applies the same methods to every state, and finds the same pattern in ${n.states_with_masked} of them.</p>
-    <div class="cta"><a class="btn-lime" href="#u-map-sec" onclick="event.preventDefault();document.getElementById('u-map-sec').scrollIntoView({behavior:'smooth'})">Explore the map <span aria-hidden="true">→</span></a><a class="btn-line" href="#california" data-go="california">Read the California case study <span aria-hidden="true">↗</span></a></div>
+    <div class="cta"><a class="btn-lime" href="#u-map-sec" onclick="event.preventDefault();document.getElementById('u-map-sec').scrollIntoView({behavior:'smooth'})">Explore the map <span aria-hidden="true">→</span></a><a class="btn-line" href="#u-charts" onclick="event.preventDefault();document.getElementById('u-charts').scrollIntoView({behavior:'smooth'})">See the charts <span aria-hidden="true">↓</span></a><a class="btn-line" href="#california" data-go="california">Read the California case study <span aria-hidden="true">↗</span></a></div>
     <p class="tagline">Tracts<i>•</i>Counties<i>•</i>Outages<i>•</i>Climate<i>•</i>Equity</p>
     <div class="bigstats">
       <div><b>${pct(n.suppressed_pct,1)}</b><span>of tract-level variation erased by county averaging</span></div>
@@ -619,6 +619,7 @@ function renderUS(){
     <div class="controls"><div class="seg" id="u-meas" role="group" aria-label="County measure">${Object.entries(US_MEAS).map(([k,m])=>`<button data-v="${k}">${m.lab}</button>`).join('')}</div></div>
     <div class="map wide" id="u-map"></div><div id="u-leg"></div><p class="note" id="u-cap"></p>
     <p class="note small">Click a county to open its state's census tracts below.</p></div>
+  ${natCharts()}
   <div class="panel" id="u-state-panel"><div class="eb">Census tracts</div><h2 id="u-st-title">Inside a state</h2>
     <div class="controls">
       <label class="chk">State <select id="u-st">${N.states.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(s=>`<option value="${s.statefp}">${esc(s.name)}</option>`).join('')}</select></label>
@@ -631,7 +632,6 @@ function renderUS(){
   <section class="split"><div><div class="eb">Inside GridAI™</div><h2>SEGDA <span class="h2g">framework</span></h2></div>
     <p>The Socio-Environmental Grid Disruption Analysis (SEGDA) examines environmental justice, county-level power-outage burden, and climate stress across California's census tracts and counties. It tests how geographic aggregation changes measured burden and considers implications for equitable resilience and public health preparedness.</p></section>
   ${keyFindings()}
-  ${natCharts()}
   ${phPanel()}
   <div class="panel"><h2>State by state</h2>
     <p class="note">Within-state variance suppression compares a state's tracts with its own counties. Click a column to sort, a row to open the state.</p>
@@ -651,6 +651,7 @@ function renderUS(){
   el.querySelector('#u-hid').onchange=e=>{US.showHidden=e.target.checked;drawState()};
   const ss=el.querySelector('#u-st'); ss.value=US.state; ss.onchange=()=>{US.state=ss.value;US.county=null;drawState()};
   drawUSMap(); drawState(); drawStateTable(); drawNatCharts();
+  if(/[?&]charts\b/.test(location.search)) setTimeout(()=>{const c=document.getElementById('u-charts'); if(c) c.scrollIntoView()},400);
 }
 /* National results in four charts. Every value is read from the audited national
    tables already embedded in the page (N.screen, N.states, NC); nothing is typed in. */
@@ -658,7 +659,7 @@ const csvCell=v=>v==null?'':/[",\n]/.test(String(v))?`"${String(v).replace(/"/g,
 const csvLink=(name,head,rows,label='Chart data (CSV)')=>{const t=[head,...rows].map(r=>r.map(csvCell).join(',')).join('\n');
   return `<a href="data:text/csv;charset=utf-8,${encodeURIComponent(t)}" download="${name}">${label}</a>`};
 function natCharts(){
-  return `<section class="nc-wrap"><div class="eb">The national results</div><h2>Four charts <span class="g">from the audited tables</span></h2>
+  return `<section class="nc-wrap" id="u-charts"><div class="eb">The national results</div><h2>Four charts <span class="g">from the audited tables</span></h2>
   <div class="grid2">
     <div class="panel nc"><h3>Which screening rule reaches the hidden residents?</h3><p class="note">Share of the residents of high-burden tracts each EJBI rule reaches, and the share of everyone it flags who actually live in a high-burden tract.</p><div id="nc-rules"></div><p class="small" id="nc-rules-dl"></p></div>
     <div class="panel nc"><h3>Hidden residents by state</h3><p class="note">People in high-burden tracts (EJBI ≥ ${N.thr.tract}) inside counties whose average is below ${N.thr.county}.</p><div id="nc-states"></div><p class="small" id="nc-states-dl"></p></div>
